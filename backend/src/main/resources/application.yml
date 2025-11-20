@@ -32,6 +32,11 @@ springdoc:
     path: /swagger-ui.html
     enabled: true
     config-url: /api/docs
+    url: /api/docs
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
     urls:
       - url: /api/docs
         name: Event Platform API
+    urls-primary-name: Event Platform API

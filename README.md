@@ -529,7 +529,7 @@ curl -X GET "http://localhost:8080/api/tickets?page=0&size=10" \
 ### Los contenedores Docker no inician
 - Se verifica que Docker Desktop esté corriendo
 - Se revisan los logs: `docker compose logs`
-- Se consulta la [Guía de solución de errores Docker](SOLUCION-ERROR-DOCKER.md)
+- Se consulta la sección de solución de problemas comunes con Docker más arriba
 
 ---
 
@@ -557,7 +557,6 @@ Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas loc
 ## Recursos adicionales
 
 - [Guía Completa de Docker](GUIA-DOCKER.md) - Instrucciones detalladas para instalar y usar Docker
-- [Solución de Errores Docker](SOLUCION-ERROR-DOCKER.md) - Troubleshooting de problemas comunes con Docker
 
 ---
 

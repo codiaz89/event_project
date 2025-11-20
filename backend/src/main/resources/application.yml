@@ -31,8 +31,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
-    config-url: /api/docs
+    disable-swagger-default-url: true
     url: /api/docs
+    config-url: /api/docs
     try-it-out-enabled: true
     operations-sorter: method
     tags-sorter: alpha

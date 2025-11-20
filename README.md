@@ -13,10 +13,11 @@ Este repositorio contiene el esqueleto inicial para la prueba técnica solicitad
 - Node.js 20+
 - Docker y Docker Compose (opcional para la corrida integrada)
 
+---
+
 ## Cómo levantar el proyecto
 
 ### Opción 1: Levantar con Docker Compose 🐳
-
 
 #### Pasos rápidos:
 
@@ -30,7 +31,7 @@ docker --version
 docker compose version
 ```
 
-3. **Desde la raíz del proyecto, ejecuta:**
+3. **Desde la raíz del proyecto, se ejecuta:**
 ```bash
 # Opción A: Usar el script automatizado (Windows - Recomendado)
 .\levantar-proyecto-docker.ps1
@@ -39,7 +40,7 @@ docker compose version
 docker compose up --build
 ```
 
-4. **Esperar a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
+4. **Se espera a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
 
 5. **Se verifica que todo funciona:**
    - **Backend API**: http://localhost:8080
@@ -55,7 +56,7 @@ docker compose up --build
 docker compose down
 ```
 
-> 💡 **Tip:** Se usa el script `.\verificar-proyecto.ps1` para verificar automáticamente que todo esté funcionando correctamente.
+> 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
 
 ### Opción 2: Levantar manualmente (paso a paso)
 
@@ -86,35 +87,7 @@ Started EventBackendApplication in X.XXX seconds
    - **API Docs**: `http://localhost:8080/api/docs`
    - **H2 Console**: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:eventdb`)
 
-#### Paso 2: Obtener token JWT
-
-Antes de usar la API, se necesita autenticar:
-
-1. Se abre otra terminal o se usa Postman/Thunder Client
-2. Se realiza una petición POST a `http://localhost:8080/api/auth/login`:
-```json
-{
-  "username": "admin",
-  "password": "admin123"
-}
-```
-
-3. Se copia el token que se recibe en la respuesta:
-```json
-{
-  "token": "eyJhbGciOiJIUzM4NCJ9...",
-  "type": "Bearer"
-}
-```
-
-4. Se usa este token en todas las peticiones posteriores agregando el header:
-```
-Authorization: Bearer <tu-token-aqui>
-```
-
-> 💡 **Tip:** También se puede usar Swagger UI para obtener el token. Se va a http://localhost:8080/swagger-ui.html, se prueba el endpoint `/api/auth/login`, se copia el token y luego se hace clic en "Authorize" (arriba a la derecha) para configurarlo.
-
-#### Paso 3: Levantar el Frontend (NestJS)
+#### Paso 2: Levantar el Frontend (NestJS)
 
 1. Se abre una **nueva terminal** (se deja el backend corriendo) y se navega al directorio del frontend:
 ```bash
@@ -148,415 +121,25 @@ npm run start:dev
    - **BFF API**: `http://localhost:3000`
    - **Health Check**: `http://localhost:3000/health`
 
-## ¿Cómo verificar que se levantó correctamente?
+---
 
-### Método 1: Script automatizado (Recomendado)
+## Autenticación y uso de la API
 
-Se ejecuta el script de verificación que comprueba automáticamente todos los servicios:
+### Credenciales disponibles
 
-```powershell
-.\verificar-proyecto.ps1
-```
+| Usuario | Password | Rol | Permisos |
+|---------|----------|-----|----------|
+| `admin` | `admin123` | ADMIN | Puede hacer todo (crear, leer, actualizar, eliminar) |
+| `analyst` | `analyst123` | USER | Solo puede leer (GET) |
 
-Este script verifica:
-- ✅ Que los contenedores Docker estén corriendo
-- ✅ Que los logs muestren inicio exitoso
-- ✅ Que los endpoints estén accesibles
-- ✅ Que el login funcione correctamente
-- ✅ Que Swagger UI esté disponible
+### Cómo obtener el token JWT
 
-### Método 2: Verificación manual
+El token JWT es necesario para acceder a los endpoints protegidos. Se puede obtener de tres formas:
 
-#### 1. Verificar contenedores
-```bash
-docker ps
-```
-
-Se deberían ver dos contenedores corriendo:
-- `event-platform-backend-1` en puerto `8080`
-- `event-platform-frontend-1` en puerto `3000`
-
-#### 2. Verificar logs
-```bash
-# Logs del backend
-docker logs event-platform-backend-1 --tail 20
-
-# Logs del frontend
-docker logs event-platform-frontend-1 --tail 20
-```
-
-Se buscan estos mensajes:
-- **Backend**: `Started EventBackendApplication` o `Tomcat started`
-- **Frontend**: `Nest application successfully started` o `listening`
-
-#### 3. Verificar endpoints en el navegador
-
-Se abre el navegador y se visita:
-
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-  - Se debería ver la documentación interactiva de la API
-  
-- **API Docs (JSON)**: http://localhost:8080/api/docs
-  - Se debería ver el JSON de la especificación OpenAPI
-
-- **Frontend**: http://localhost:3000
-  - Se debería ver una respuesta (puede ser un error 404 si no hay ruta raíz, pero el servidor debe responder)
-
-#### 4. Probar el login
-
-Se usa PowerShell, Postman, o curl:
-
-```powershell
-# PowerShell
-$body = @{
-    username = "admin"
-    password = "admin123"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -Body $body -ContentType "application/json"
-```
-
-O con curl:
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-```
-
-**Respuesta esperada:**
-```json
-{
-  "jwtToken": "eyJhbGciOiJIUzM4NCJ9..."
-}
-```
-
-#### 5. Probar un endpoint protegido
-
-Se usa el token obtenido en el paso anterior:
-
-```powershell
-# PowerShell
-$token = "tu-token-aqui"
-$headers = @{
-    Authorization = "Bearer $token"
-}
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method GET -Headers $headers
-```
-
-O con curl:
-```bash
-curl -X GET http://localhost:8080/api/users \
-  -H "Authorization: Bearer tu-token-aqui"
-```
-
-**Respuesta esperada:** Una lista de usuarios (puede estar vacía inicialmente)
-
-### Indicadores de éxito ✅
-
-- ✅ Los contenedores aparecen en `docker ps` con estado "Up"
-- ✅ Los logs muestran mensajes de inicio exitoso
-- ✅ Swagger UI se carga en el navegador
-- ✅ El login devuelve un token JWT
-- ✅ Los endpoints protegidos responden con el token
-
-### Indicadores de problemas ❌
-
-- ❌ Los contenedores no aparecen o están en estado "Exited"
-- ❌ Los logs muestran errores de conexión o compilación
-- ❌ No puedes acceder a las URLs en el navegador
-- ❌ El login devuelve error 401 o 500
-- ❌ Los endpoints protegidos devuelven 401/403 incluso con token
-
-**Solución:** Revisa la sección [Solución de problemas comunes](#solución-de-problemas-comunes) más abajo.
-
-### Endpoints BFF disponibles
-- `GET /health` - Health check del servicio
-- `GET /users` - Listar todos los usuarios
-- `GET /users/:id` - Obtener usuario por ID
-- `POST /users` - Crear nuevo usuario
-- `PUT /users/:id` - Actualizar usuario
-- `GET /tickets` - Listar tickets (con filtros opcionales: `?status=ABIERTO&userId=<uuid>`)
-- `GET /tickets/:id` - Obtener ticket por ID
-- `POST /tickets` - Crear nuevo ticket
-- `PUT /tickets/:id` - Actualizar ticket
-- `GET /tickets/user/:userId` - Obtener tickets de un usuario específico
-
-## Cómo usar el proyecto con datos reales
-
-### Opción 1: Script automatizado completo (Recomendado) ⭐
-
-Se ejecuta el script que prueba **TODOS** los endpoints automáticamente:
-
-```powershell
-.\probar-todos-endpoints.ps1
-```
-
-Este script prueba exhaustivamente:
-- ✅ **Autenticación**: Login y obtención de token JWT
-- ✅ **Usuarios**: Crear, listar todos, obtener por ID, actualizar
-- ✅ **Tickets**: Crear, listar todos, obtener por ID, actualizar, eliminar
-- ✅ **Filtros**: Por estado, por usuario, combinados, con paginación
-- ✅ **Tickets por usuario**: Obtener todos los tickets de un usuario
-- ✅ **Frontend BFF**: Health check y endpoints del BFF
-- ✅ **Resumen detallado**: Estadísticas de pruebas exitosas y fallidas
-
-El script muestra un resumen completo con:
-- Total de pruebas ejecutadas
-- Cantidad de pruebas exitosas y fallidas
-- Tasa de éxito en porcentaje
-- Detalles de errores (si los hay)
-
-### Opción 2: Script básico de pruebas
-
-Si se prefiere un script más simple que solo crea datos de ejemplo:
-
-```powershell
-.\probar-api.ps1
-```
-
-Este script realiza:
-- ✅ Autenticación y obtención de token JWT
-- ✅ Creación de 3 usuarios de ejemplo
-- ✅ Creación de tickets de prueba
-- ✅ Listado de todos los recursos
-- ✅ Filtrado de tickets por estado
-- ✅ Búsqueda de tickets por usuario
-- ✅ Actualización de usuarios y tickets
-- ✅ Prueba del frontend BFF
-
-### Opción 3: Prueba manual paso a paso
-
-#### Paso 1: Obtener token JWT
-
-```powershell
-# PowerShell
-$body = @{
-    username = "admin"
-    password = "admin123"
-} | ConvertTo-Json
-
-$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -Body $body -ContentType "application/json"
-$token = $response.jwtToken
-Write-Host "Token: $token"
-```
-
-O con curl:
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-```
-
-**Respuesta:**
-```json
-{
-  "jwtToken": "eyJhbGciOiJIUzM4NCJ9.eyJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NjM2NjM1NjAsImV4cCI6MTc2Mzc0OTk2MH0..."
-}
-```
-
-#### Paso 2: Crear usuarios
-
-```powershell
-# PowerShell
-$headers = @{
-    Authorization = "Bearer $token"
-    "Content-Type" = "application/json"
-}
-
-$user1 = @{
-    firstName = "Juan"
-    lastName = "Pérez"
-} | ConvertTo-Json
-
-$response = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method POST -Headers $headers -Body $user1
-$userId1 = $response.id
-Write-Host "Usuario creado: $($response.firstName) $($response.lastName) - ID: $userId1"
-```
-
-O con curl:
-```bash
-curl -X POST http://localhost:8080/api/users \
-  -H "Authorization: Bearer $token" \
-  -H "Content-Type: application/json" \
-  -d '{"firstName":"Juan","lastName":"Pérez"}'
-```
-
-**Respuesta:**
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "firstName": "Juan",
-  "lastName": "Pérez",
-  "createdAt": "2025-11-20T18:30:00.000Z",
-  "updatedAt": "2025-11-20T18:30:00.000Z"
-}
-```
-
-#### Paso 3: Crear tickets
-
-```powershell
-# PowerShell
-$ticket = @{
-    description = "Problema con acceso al sistema de eventos"
-    userId = $userId1
-    status = "ABIERTO"
-} | ConvertTo-Json
-
-$response = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets" -Method POST -Headers $headers -Body $ticket
-$ticketId = $response.id
-Write-Host "Ticket creado: $($response.description) - ID: $ticketId"
-```
-
-O con curl:
-```bash
-curl -X POST http://localhost:8080/api/tickets \
-  -H "Authorization: Bearer $token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "description": "Problema con acceso al sistema de eventos",
-    "userId": "550e8400-e29b-41d4-a716-446655440000",
-    "status": "ABIERTO"
-  }'
-```
-
-**Respuesta:**
-```json
-{
-  "id": "660e8400-e29b-41d4-a716-446655440001",
-  "description": "Problema con acceso al sistema de eventos",
-  "status": "ABIERTO",
-  "userId": "550e8400-e29b-41d4-a716-446655440000",
-  "createdAt": "2025-11-20T18:30:00.000Z",
-  "updatedAt": "2025-11-20T18:30:00.000Z"
-}
-```
-
-#### Paso 4: Listar usuarios
-
-```powershell
-# PowerShell
-$users = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method GET -Headers $headers
-$users | ForEach-Object { Write-Host "$($_.firstName) $($_.lastName) - $($_.id)" }
-```
-
-O con curl:
-```bash
-curl -X GET http://localhost:8080/api/users \
-  -H "Authorization: Bearer $token"
-```
-
-#### Paso 5: Listar tickets con filtros
-
-```powershell
-# PowerShell - Filtrar por estado
-$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO" -Method GET -Headers $headers
-Write-Host "Tickets abiertos: $($tickets.totalElements)"
-
-# Filtrar por usuario y estado
-$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO&userId=$userId1" -Method GET -Headers $headers
-Write-Host "Tickets del usuario: $($tickets.totalElements)"
-
-# Con paginación
-$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?page=0&size=10" -Method GET -Headers $headers
-Write-Host "Página 1: $($tickets.content.Count) tickets de $($tickets.totalElements) totales"
-```
-
-O con curl:
-```bash
-# Filtrar por estado
-curl -X GET "http://localhost:8080/api/tickets?status=ABIERTO" \
-  -H "Authorization: Bearer $token"
-
-# Filtrar por usuario y estado
-curl -X GET "http://localhost:8080/api/tickets?status=ABIERTO&userId=550e8400-e29b-41d4-a716-446655440000" \
-  -H "Authorization: Bearer $token"
-
-# Con paginación
-curl -X GET "http://localhost:8080/api/tickets?page=0&size=10" \
-  -H "Authorization: Bearer $token"
-```
-
-#### Paso 6: Obtener tickets de un usuario específico
-
-```powershell
-# PowerShell
-$userTickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/user/$userId1" -Method GET -Headers $headers
-Write-Host "El usuario tiene $($userTickets.Count) tickets"
-$userTickets | ForEach-Object { Write-Host "  - [$($_.status)] $($_.description)" }
-```
-
-O con curl:
-```bash
-curl -X GET "http://localhost:8080/api/tickets/user/550e8400-e29b-41d4-a716-446655440000" \
-  -H "Authorization: Bearer $token"
-```
-
-#### Paso 7: Actualizar un ticket
-
-```powershell
-# PowerShell
-$updateData = @{
-    description = "Problema con acceso al sistema [RESUELTO]"
-    userId = $userId1
-    status = "CERRADO"
-} | ConvertTo-Json
-
-$updatedTicket = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/$ticketId" -Method PUT -Headers $headers -Body $updateData
-Write-Host "Ticket actualizado: Estado = $($updatedTicket.status)"
-```
-
-O con curl:
-```bash
-curl -X PUT "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655440001" \
-  -H "Authorization: Bearer $token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "description": "Problema con acceso al sistema [RESUELTO]",
-    "userId": "550e8400-e29b-41d4-a716-446655440000",
-    "status": "CERRADO"
-  }'
-```
-
-#### Paso 8: Actualizar un usuario
-
-```powershell
-# PowerShell
-$updateData = @{
-    firstName = "Juan Carlos"
-    lastName = "Pérez"
-} | ConvertTo-Json
-
-$updatedUser = Invoke-RestMethod -Uri "http://localhost:8080/api/users/$userId1" -Method PUT -Headers $headers -Body $updateData
-Write-Host "Usuario actualizado: $($updatedUser.firstName) $($updatedUser.lastName)"
-```
-
-O con curl:
-```bash
-curl -X PUT "http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440000" \
-  -H "Authorization: Bearer $token" \
-  -H "Content-Type: application/json" \
-  -d '{"firstName":"Juan Carlos","lastName":"Pérez"}'
-```
-
-#### Paso 9: Eliminar un ticket
-
-```powershell
-# PowerShell
-Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/$ticketId" -Method DELETE -Headers $headers
-Write-Host "Ticket eliminado"
-```
-
-O con curl:
-```bash
-curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655440001" \
-  -H "Authorization: Bearer $token"
-```
-
-### Opción 4: Usar Swagger UI (Interfaz gráfica)
+#### Opción 1: Usar Swagger UI (Recomendado) ⭐
 
 1. Se abre el navegador en: http://localhost:8080/swagger-ui.html
-2. Se hace clic en el endpoint `/api/auth/login` y luego en "Try it out"
+2. Se busca el endpoint `POST /api/auth/login` y se hace clic en "Try it out"
 3. Se ingresan las credenciales:
    ```json
    {
@@ -564,27 +147,238 @@ curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655
      "password": "admin123"
    }
    ```
-4. Se hace clic en "Execute" y se copia el token JWT de la respuesta
-5. Se hace clic en el botón "Authorize" (arriba a la derecha)
-6. Se ingresa: `Bearer <tu-token-aqui>` y se hace clic en "Authorize"
-7. Ahora se pueden probar todos los endpoints directamente desde Swagger
+4. Se hace clic en "Execute"
+5. Se copia el `token` de la respuesta
+6. Se hace clic en el botón "Authorize" (arriba a la derecha, con icono de candado)
+7. Se ingresa: `Bearer <tu-token-aqui>` y se hace clic en "Authorize"
+8. ¡Listo! Ahora se pueden probar todos los endpoints directamente desde Swagger
 
-### Opción 5: Usar el Frontend BFF
+**Respuesta esperada:**
+```json
+{
+  "token": "eyJhbGciOiJIUzM4NCJ9...",
+  "type": "Bearer"
+}
+```
+
+#### Opción 2: Usar Postman o Thunder Client
+
+1. Se crea una nueva petición **POST**
+2. URL: `http://localhost:8080/api/auth/login`
+3. Headers: `Content-Type: application/json`
+4. Body (raw JSON):
+   ```json
+   {
+     "username": "admin",
+     "password": "admin123"
+   }
+   ```
+5. Se envía la petición
+6. Se copia el `token` de la respuesta
+7. Para otras peticiones, se agrega el header: `Authorization: Bearer <token>`
+
+#### Opción 3: Usar PowerShell o curl
+
+**PowerShell:**
+```powershell
+$body = @{
+    username = "admin"
+    password = "admin123"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -Body $body -ContentType "application/json"
+$token = $response.token
+Write-Host "Token: $token"
+```
+
+**curl:**
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+### Usar el token en las peticiones
+
+Una vez obtenido el token, se incluye en todas las peticiones protegidas agregando el header:
+
+```
+Authorization: Bearer <tu-token-aqui>
+```
+
+**Ejemplo en PowerShell:**
+```powershell
+$headers = @{
+    Authorization = "Bearer $token"
+    "Content-Type" = "application/json"
+}
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method GET -Headers $headers
+```
+
+**Ejemplo en curl:**
+```bash
+curl -X GET http://localhost:8080/api/users \
+  -H "Authorization: Bearer tu-token-aqui"
+```
+
+---
+
+## Endpoints disponibles
+
+### Backend API (Puerto 8080)
+
+#### Autenticación
+- `POST /api/auth/login` - Obtener token JWT
+
+#### Usuarios
+- `GET /api/users` - Listar todos los usuarios
+- `GET /api/users/{id}` - Obtener usuario por ID
+- `POST /api/users` - Crear nuevo usuario
+- `PUT /api/users/{id}` - Actualizar usuario
+
+#### Tickets
+- `GET /api/tickets` - Listar tickets (con filtros opcionales: `?status=ABIERTO&userId=<uuid>&page=0&size=10`)
+- `GET /api/tickets/{id}` - Obtener ticket por ID
+- `POST /api/tickets` - Crear nuevo ticket
+- `PUT /api/tickets/{id}` - Actualizar ticket
+- `DELETE /api/tickets/{id}` - Eliminar ticket
+- `GET /api/tickets/user/{userId}` - Obtener tickets de un usuario específico
+
+### Frontend BFF (Puerto 3000)
 
 El frontend actúa como un BFF (Backend for Frontend) y expone los mismos endpoints:
 
+- `GET /health` - Health check del servicio
+- `GET /users` - Listar todos los usuarios
+- `GET /users/:id` - Obtener usuario por ID
+- `POST /users` - Crear nuevo usuario
+- `PUT /users/:id` - Actualizar usuario
+- `GET /tickets` - Listar tickets (con filtros opcionales)
+- `GET /tickets/:id` - Obtener ticket por ID
+- `POST /tickets` - Crear nuevo ticket
+- `PUT /tickets/:id` - Actualizar ticket
+- `GET /tickets/user/:userId` - Obtener tickets de un usuario específico
+
+> **Nota:** El BFF requiere autenticación JWT del backend. Primero se obtiene el token desde `http://localhost:8080/api/auth/login` y luego se usa en las peticiones al BFF.
+
+---
+
+## Cómo probar los endpoints
+
+### Opción 1: Swagger UI (Interfaz gráfica) ⭐
+
+Swagger UI es la forma más fácil de probar todos los endpoints:
+
+1. Se abre el navegador en: http://localhost:8080/swagger-ui.html
+2. Se hace login siguiendo los pasos de la sección [Cómo obtener el token JWT](#cómo-obtener-el-token-jwt)
+3. Se autoriza con el token usando el botón "Authorize"
+4. Se puede probar cualquier endpoint directamente desde la interfaz
+
+**Ventajas:**
+- Interfaz gráfica intuitiva
+- Documentación interactiva
+- No requiere herramientas externas
+- Permite ver las respuestas en tiempo real
+
+### Opción 2: Postman o Thunder Client
+
+1. Se importa la colección de endpoints (opcional)
+2. Se crea una petición de login para obtener el token
+3. Se configura el token en las variables de entorno o en cada petición
+4. Se prueban los endpoints uno por uno
+
+**Ventajas:**
+- Permite guardar colecciones de peticiones
+- Facilita el trabajo en equipo
+- Permite automatizar pruebas
+
+### Opción 3: Scripts automatizados (PowerShell)
+
+Se pueden usar scripts para probar múltiples endpoints automáticamente. Consulta los scripts disponibles en el repositorio.
+
+---
+
+## Ejemplos de uso
+
+### Crear un usuario
+
+**PowerShell:**
 ```powershell
-# Health check
-Invoke-RestMethod -Uri "http://localhost:3000/health"
+$headers = @{
+    Authorization = "Bearer $token"
+    "Content-Type" = "application/json"
+}
 
-# Listar usuarios (requiere autenticación en el backend)
-Invoke-RestMethod -Uri "http://localhost:3000/users" -Headers $headers
+$user = @{
+    firstName = "Juan"
+    lastName = "Pérez"
+} | ConvertTo-Json
 
-# Listar tickets
-Invoke-RestMethod -Uri "http://localhost:3000/tickets" -Headers $headers
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method POST -Headers $headers -Body $user
 ```
 
-### Ver los datos en la base de datos H2
+**curl:**
+```bash
+curl -X POST http://localhost:8080/api/users \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Juan","lastName":"Pérez"}'
+```
+
+### Crear un ticket
+
+**PowerShell:**
+```powershell
+$ticket = @{
+    description = "Problema con acceso al sistema de eventos"
+    userId = "<uuid-del-usuario>"
+    status = "ABIERTO"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets" -Method POST -Headers $headers -Body $ticket
+```
+
+**curl:**
+```bash
+curl -X POST http://localhost:8080/api/tickets \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Problema con acceso al sistema de eventos",
+    "userId": "<uuid-del-usuario>",
+    "status": "ABIERTO"
+  }'
+```
+
+### Filtrar tickets
+
+**PowerShell:**
+```powershell
+# Filtrar por estado
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO" -Method GET -Headers $headers
+
+# Filtrar por usuario y estado
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO&userId=<uuid>" -Method GET -Headers $headers
+
+# Con paginación
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?page=0&size=10" -Method GET -Headers $headers
+```
+
+**curl:**
+```bash
+# Filtrar por estado
+curl -X GET "http://localhost:8080/api/tickets?status=ABIERTO" \
+  -H "Authorization: Bearer $token"
+
+# Con paginación
+curl -X GET "http://localhost:8080/api/tickets?page=0&size=10" \
+  -H "Authorization: Bearer $token"
+```
+
+---
+
+## Ver los datos en la base de datos H2
 
 1. Se abre el navegador en: http://localhost:8080/h2-console
 2. Se ingresan los siguientes datos:
@@ -606,50 +400,7 @@ Invoke-RestMethod -Uri "http://localhost:3000/tickets" -Headers $headers
    JOIN users u ON t.user_id = u.id;
    ```
 
-## Ejemplos de uso (Referencia rápida)
-
-### Crear un usuario
-```bash
-POST http://localhost:8080/api/users
-Authorization: Bearer <tu-token>
-Content-Type: application/json
-
-{
-  "firstName": "Juan",
-  "lastName": "Pérez"
-}
-```
-
-### Crear un ticket
-```bash
-POST http://localhost:8080/api/tickets
-Authorization: Bearer <tu-token>
-Content-Type: application/json
-
-{
-  "description": "Problema con acceso al sistema",
-  "userId": "<uuid-del-usuario>",
-  "status": "ABIERTO"
-}
-```
-
-### Filtrar tickets por estatus
-```bash
-GET http://localhost:8080/api/tickets?status=ABIERTO&page=0&size=10
-Authorization: Bearer <tu-token>
-```
-
-### Obtener tickets de un usuario
-```bash
-GET http://localhost:8080/api/tickets/user/<uuid-del-usuario>
-Authorization: Bearer <tu-token>
-```
-
-## Ejecutar con Docker Compose
-```
-docker compose up --build
-```
-Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` frontend) dentro de la misma red para facilitar las llamadas internas.
+---
 
 ## Solución de problemas comunes
 
@@ -667,12 +418,26 @@ Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` f
 - Se asegura de haber obtenido un token JWT válido desde `/api/auth/login`
 - Se verifica que el header `Authorization: Bearer <token>` esté presente
 - El token expira después de 24 horas, se obtiene uno nuevo si es necesario
+- Se verifica que el usuario tenga los permisos necesarios (ADMIN para crear/actualizar/eliminar)
 
 ### Error al ejecutar Maven Wrapper
 - En Windows, se usa `.\mvnw.cmd` en lugar de `./mvnw`
 - Se asegura de tener permisos de ejecución en el archivo `mvnw` (Linux/Mac): `chmod +x mvnw`
 
+### Swagger UI no muestra el botón "Authorize"
+- Se verifica que se haya configurado correctamente la seguridad JWT en el backend
+- Se refresca la página o se limpia la caché del navegador
+- Se verifica que se esté accediendo a la URL correcta: http://localhost:8080/swagger-ui.html
+
+### Los contenedores Docker no inician
+- Se verifica que Docker Desktop esté corriendo
+- Se revisan los logs: `docker compose logs`
+- Se consulta la [Guía de solución de errores Docker](SOLUCION-ERROR-DOCKER.md)
+
+---
+
 ## Seguridad
+
 El backend utiliza autenticación JWT (JSON Web Tokens) con usuarios en memoria:
 
 | Usuario | Rol  | Contraseña |
@@ -684,4 +449,25 @@ El backend utiliza autenticación JWT (JSON Web Tokens) con usuarios en memoria:
 1. Se obtiene el token JWT: `POST /api/auth/login` con `{"username": "admin", "password": "admin123"}`
 2. Se usa el token: Se incluye en el header `Authorization: Bearer <token>`
 
-`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear, actualizar o eliminar recursos. Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas locales.
+### Permisos
+- `USER` puede consumir endpoints GET (solo lectura)
+- `ADMIN` puede crear, actualizar o eliminar recursos (CRUD completo)
+
+Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas locales.
+
+---
+
+## Recursos adicionales
+
+- [Guía Completa de Docker](GUIA-DOCKER.md) - Instrucciones detalladas para instalar y usar Docker
+- [Solución de Errores Docker](SOLUCION-ERROR-DOCKER.md) - Troubleshooting de problemas comunes con Docker
+
+---
+
+## Ejecutar con Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` frontend) dentro de la misma red para facilitar las llamadas internas.

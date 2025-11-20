@@ -46,11 +46,15 @@ Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` f
 3. Incorporar nuevas funcionalidades (asignaciones, mÃ©tricas, notificaciones) y pruebas end-to-end.
 
 ## Seguridad
-El backend utiliza autenticaciÃ³n HTTP Basic con usuarios en memoria:
+El backend utiliza autenticaciÃ³n JWT (JSON Web Tokens) con usuarios en memoria:
 
 | Usuario | Rol  | ContraseÃ±a |
 |---------|------|-------------|
 | admin   | ADMIN| `admin123`  |
 | analyst | USER | `analyst123`|
 
-`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear o actualizar recursos. Los recursos de Swagger y H2 permanecen pÃºblicos para facilitar las pruebas locales.
+### AutenticaciÃ³n
+1. Obtener token JWT: `POST /api/auth/login` con `{"username": "admin", "password": "admin123"}`
+2. Usar el token: Incluir en el header `Authorization: Bearer <token>`
+
+`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear, actualizar o eliminar recursos. Los recursos de Swagger y H2 permanecen pÃºblicos para facilitar las pruebas locales.

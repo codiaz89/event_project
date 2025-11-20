@@ -24,9 +24,9 @@ Esta es la forma más sencilla de levantar todo el proyecto. Docker Compose se e
 #### Requisitos previos
 
 1. **Docker Desktop instalado y corriendo**
-   - Descarga desde: https://www.docker.com/products/docker-desktop/
-   - Instala Docker Desktop siguiendo las instrucciones del instalador
-   - Inicia Docker Desktop y espera a que esté completamente listo (el ícono de Docker en la bandeja del sistema debe estar estable)
+   - Se descarga desde: https://www.docker.com/products/docker-desktop/
+   - Se instala Docker Desktop siguiendo las instrucciones del instalador
+   - Se inicia Docker Desktop y se espera a que esté completamente listo (el ícono de Docker en la bandeja del sistema debe estar estable)
 
 2. **Verificar la instalación:**
 ```bash
@@ -34,7 +34,7 @@ docker --version
 docker compose version
 ```
 
-Deberías ver algo como:
+Se debería ver algo como:
 ```
 Docker version 24.0.x, build xxxxx
 Docker Compose version v2.x.x
@@ -57,10 +57,10 @@ docker compose up --build
 ```
 
 > **Nota:** La primera vez puede tomar 5-10 minutos mientras:
-> - Descarga las imágenes base (Java, Node.js)
-> - Compila el backend (Maven)
-> - Instala dependencias del frontend (npm)
-> - Construye las imágenes finales
+> - Se descargan las imágenes base (Java, Node.js)
+> - Se compila el backend (Maven)
+> - Se instalan las dependencias del frontend (npm)
+> - Se construyen las imágenes finales
 
 3. **Verificar que los servicios están corriendo:**
 
@@ -70,7 +70,7 @@ Se abren dos terminales y se ejecuta:
 docker ps
 ```
 
-Deberías ver dos contenedores:
+Se deberían ver dos contenedores:
 - `event-platform-backend-1` en puerto `8080`
 - `event-platform-frontend-1` en puerto `3000`
 
@@ -226,8 +226,8 @@ npm run start:dev
 
 | Usuario | Password | Rol | Permisos |
 |---------|----------|-----|----------|
-| `admin` | `admin123` | ADMIN | Puede hacer todo (crear, leer, actualizar, eliminar) |
-| `analyst` | `analyst123` | USER | Solo puede leer (GET) |
+| `admin` | `admin123` | ADMIN | Se puede hacer todo (crear, leer, actualizar, eliminar) |
+| `analyst` | `analyst123` | USER | Solo se puede leer (GET) |
 
 ### Cómo obtener el token JWT
 
@@ -547,8 +547,8 @@ El backend utiliza autenticación JWT (JSON Web Tokens) con usuarios en memoria:
 2. Se usa el token: Se incluye en el header `Authorization: Bearer <token>`
 
 ### Permisos
-- `USER` puede consumir endpoints GET (solo lectura)
-- `ADMIN` puede crear, actualizar o eliminar recursos (CRUD completo)
+- `USER`: Se pueden consumir endpoints GET (solo lectura)
+- `ADMIN`: Se pueden crear, actualizar o eliminar recursos (CRUD completo)
 
 Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas locales.
 
@@ -566,4 +566,4 @@ Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas loc
 docker compose up --build
 ```
 
-Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` frontend) dentro de la misma red para facilitar las llamadas internas.
+Esto levanta ambos servicios y se abren los mismos puertos (`8080` backend, `3000` frontend) dentro de la misma red para facilitar las llamadas internas.

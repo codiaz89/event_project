@@ -7,7 +7,7 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { TicketQueryDto } from './dto/ticket-query.dto';
 import { mapAxiosError } from '../common/utils/http-error.util';
 
-interface PaginatedTicketResponse {
+export interface PaginatedTicketResponse {
   content: TicketResponseDto[];
   totalElements: number;
   totalPages: number;

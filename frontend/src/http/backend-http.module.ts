@@ -7,17 +7,24 @@ import { ConfigService } from '@nestjs/config';
   imports: [
     HttpModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        baseURL: config.get<string>('api.baseUrl'),
-        auth: {
-          username: config.get<string>('api.username'),
-          password: config.get<string>('api.password'),
-        },
-        timeout: 5000,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const username = config.get<string>('api.username');
+        const password = config.get<string>('api.password');
+        const configOptions: any = {
+          baseURL: config.get<string>('api.baseUrl'),
+          timeout: 5000,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        if (username && password) {
+          configOptions.auth = {
+            username,
+            password,
+          };
+        }
+        return configOptions;
+      },
     }),
   ],
   exports: [HttpModule],

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { TicketsService } from './tickets.service';
+import { TicketsService, PaginatedTicketResponse } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { TicketQueryDto } from './dto/ticket-query.dto';
@@ -28,7 +28,7 @@ export class TicketsController {
   }
 
   @Get()
-  getTickets(@Query() query: TicketQueryDto) {
+  getTickets(@Query() query: TicketQueryDto): Promise<PaginatedTicketResponse> {
     return this.ticketsService.getTickets(query);
   }
 

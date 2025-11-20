@@ -4,17 +4,14 @@ Thumbs.db
 *.log
 .env
 
-# IntelliJ / VSCode
+# IDEs
 .idea/
 .vscode/
 
 # Maven
-backend/target/
-backend/.mvn/
-backend/mvnw
-backend/mvnw.cmd
+**/target/
 
 # Node / NestJS
-frontend/node_modules/
+**/node_modules/
 frontend/dist/
 frontend/.turbo/

@@ -105,19 +105,40 @@ npm run start:dev
 
 ### Opción 2: Levantar con Docker Compose (todo en uno)
 
-1. Asegúrate de tener Docker y Docker Compose instalados
+> 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
 
-2. Desde la raíz del proyecto, ejecuta:
+#### Pasos rápidos:
+
+1. **Asegúrate de tener Docker Desktop instalado y corriendo**
+   - Descarga desde: https://www.docker.com/products/docker-desktop/
+   - Inicia Docker Desktop y espera a que esté listo
+
+2. **Verifica la instalación:**
 ```bash
+docker --version
+docker compose version
+```
+
+3. **Desde la raíz del proyecto, ejecuta:**
+```bash
+# Opción A: Usar el script automatizado (Windows)
+.\levantar-proyecto-docker.ps1
+
+# Opción B: Comando manual
 docker compose up --build
 ```
 
-3. Esto levantará ambos servicios automáticamente:
-   - Backend en `http://localhost:8080`
-   - Frontend en `http://localhost:3000`
+4. **Espera a que los servicios inicien** (5-10 minutos la primera vez)
 
-4. Para detener los servicios:
+5. **Verifica que todo funciona:**
+   - Backend: http://localhost:8080
+   - Swagger: http://localhost:8080/api/swagger
+   - Frontend: http://localhost:3000
+
+6. **Para detener los servicios:**
 ```bash
+# Presiona Ctrl+C en la terminal donde corre Docker
+# O ejecuta en otra terminal:
 docker compose down
 ```
 

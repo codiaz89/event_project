@@ -1,6 +1,6 @@
 # Solución: Error 500 al levantar Docker Compose
 
-## 🔴 Error que estás viendo
+## 🔴 Error que se está viendo
 
 ```
 unable to get image 'event-platform-frontend': request returned 500 Internal Server Error
@@ -14,23 +14,23 @@ Este error indica que Docker Desktop no está completamente iniciado o hay un pr
 
 ### Solución 1: Reiniciar Docker Desktop
 
-1. **Cierra Docker Desktop completamente:**
-   - Haz clic derecho en el ícono de Docker en la bandeja del sistema
-   - Selecciona "Quit Docker Desktop"
-   - Espera a que se cierre completamente
+1. **Se cierra Docker Desktop completamente:**
+   - Se hace clic derecho en el ícono de Docker en la bandeja del sistema
+   - Se selecciona "Quit Docker Desktop"
+   - Se espera a que se cierre completamente
 
-2. **Abre Docker Desktop nuevamente:**
-   - Busca "Docker Desktop" en el menú de inicio
-   - Ábrelo y **espera 1-2 minutos** hasta que el ícono deje de animarse
+2. **Se abre Docker Desktop nuevamente:**
+   - Se busca "Docker Desktop" en el menú de inicio
+   - Se abre y **se espera 1-2 minutos** hasta que el ícono deje de animarse
    - El ícono debe mostrar "Docker Desktop is running"
 
-3. **Verifica que funciona:**
+3. **Se verifica que funciona:**
    ```powershell
    docker ps
    ```
-   Deberías ver una tabla vacía (sin errores)
+   Se debería ver una tabla vacía (sin errores)
 
-4. **Intenta nuevamente:**
+4. **Se intenta nuevamente:**
    ```powershell
    docker compose up --build
    ```
@@ -41,18 +41,18 @@ Este error indica que Docker Desktop no está completamente iniciado o hay un pr
 
 El error puede ser causado por problemas con WSL 2:
 
-1. **Verifica el estado de WSL:**
+1. **Se verifica el estado de WSL:**
    ```powershell
    wsl --status
    ```
    Debe mostrar: `Default Version: 2`
 
-2. **Si no está en versión 2, actualízalo:**
+2. **Si no está en versión 2, se actualiza:**
    ```powershell
    wsl --set-default-version 2
    ```
 
-3. **Reinicia Docker Desktop** después de cambiar WSL
+3. **Se reinicia Docker Desktop** después de cambiar WSL
 
 ---
 
@@ -60,18 +60,18 @@ El error puede ser causado por problemas con WSL 2:
 
 A veces hay imágenes o contenedores corruptos:
 
-1. **Detén todos los contenedores:**
+1. **Se detienen todos los contenedores:**
    ```powershell
    docker compose down
    ```
 
-2. **Limpia recursos no utilizados:**
+2. **Se limpian recursos no utilizados:**
    ```powershell
    docker system prune -a --volumes -f
    ```
    ⚠️ Esto eliminará todas las imágenes, contenedores y volúmenes no utilizados
 
-3. **Intenta nuevamente:**
+3. **Se intenta nuevamente:**
    ```powershell
    docker compose up --build
    ```
@@ -82,12 +82,12 @@ A veces hay imágenes o contenedores corruptos:
 
 Si hay problemas con la caché de Docker:
 
-1. **Reconstruye sin usar caché:**
+1. **Se reconstruye sin usar caché:**
    ```powershell
    docker compose build --no-cache
    ```
 
-2. **Luego levanta los servicios:**
+2. **Luego se levantan los servicios:**
    ```powershell
    docker compose up
    ```
@@ -96,27 +96,27 @@ Si hay problemas con la caché de Docker:
 
 ### Solución 5: Verificar configuración de Docker Desktop
 
-1. **Abre Docker Desktop**
-2. **Ve a Settings (Configuración)**
+1. **Se abre Docker Desktop**
+2. **Se va a Settings (Configuración)**
 3. **General:**
-   - ✅ Marca "Use the WSL 2 based engine"
-   - ✅ Marca "Start Docker Desktop when you log in" (opcional)
+   - ✅ Se marca "Use the WSL 2 based engine"
+   - ✅ Se marca "Start Docker Desktop when you log in" (opcional)
 4. **Resources:**
-   - Verifica que tengas al menos 4GB de RAM asignados
-   - Verifica que tengas al menos 20GB de espacio en disco
+   - Se verifica que se tengan al menos 4GB de RAM asignados
+   - Se verifica que se tengan al menos 20GB de espacio en disco
 5. **Apply & Restart**
 
 ---
 
 ### Solución 6: Usar el script de diagnóstico
 
-Ejecuta el script de diagnóstico que creamos:
+Se ejecuta el script de diagnóstico que se creó:
 
 ```powershell
 .\diagnosticar-docker.ps1
 ```
 
-Este script te ayudará a identificar el problema específico.
+Este script ayudará a identificar el problema específico.
 
 ---
 
@@ -124,25 +124,25 @@ Este script te ayudará a identificar el problema específico.
 
 Si nada funciona:
 
-1. **Desinstala Docker Desktop:**
+1. **Se desinstala Docker Desktop:**
    - Panel de Control → Programas → Desinstalar
    - O desde Settings de Windows
 
-2. **Descarga e instala nuevamente:**
+2. **Se descarga e instala nuevamente:**
    - https://www.docker.com/products/docker-desktop/
-   - Sigue el proceso de instalación completo
+   - Se sigue el proceso de instalación completo
 
-3. **Reinicia tu computadora**
+3. **Se reinicia la computadora**
 
-4. **Inicia Docker Desktop y espera a que esté completamente listo**
+4. **Se inicia Docker Desktop y se espera a que esté completamente listo**
 
-5. **Intenta nuevamente**
+5. **Se intenta nuevamente**
 
 ---
 
 ## 🔍 Verificar que Docker funciona correctamente
 
-Ejecuta estos comandos para verificar:
+Se ejecutan estos comandos para verificar:
 
 ```powershell
 # 1. Verificar versión
@@ -166,7 +166,7 @@ Si todos estos comandos funcionan sin errores, Docker está funcionando correcta
 
 ```powershell
 # Ver logs de Docker Desktop
-# (Abre Docker Desktop → Troubleshoot → View logs)
+# (Se abre Docker Desktop → Troubleshoot → View logs)
 
 # Ver contenedores corriendo
 docker ps
@@ -219,16 +219,16 @@ docker compose up --build
 
 ## 🆘 Si el problema persiste
 
-1. **Revisa los logs de Docker Desktop:**
+1. **Se revisan los logs de Docker Desktop:**
    - Docker Desktop → Troubleshoot → View logs
 
-2. **Verifica el Event Viewer de Windows:**
-   - Busca errores relacionados con Docker o WSL
+2. **Se verifica el Event Viewer de Windows:**
+   - Se buscan errores relacionados con Docker o WSL
 
-3. **Consulta la documentación oficial:**
+3. **Se consulta la documentación oficial:**
    - https://docs.docker.com/desktop/troubleshoot/
 
-4. **Verifica que tu sistema cumple los requisitos:**
+4. **Se verifica que el sistema cumple los requisitos:**
    - Windows 10/11 64-bit
    - WSL 2 habilitado
    - Virtualización habilitada en BIOS
@@ -252,4 +252,5 @@ Antes de intentar levantar el proyecto, verifica:
 ---
 
 ¡Espero que esto resuelva tu problema! 🚀
+
 

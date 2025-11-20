@@ -1,11 +1,11 @@
 # Event Platform Workspace
 
-Este repositorio contiene el esqueleto inicial para la prueba tÃ©cnica solicitada por Double V Partners / NYX. Separamos el backend en Spring Boot y el frontend en NestJS, ambos listos para ejecutarse de forma independiente o mediante Docker Compose.
+Este repositorio contiene el esqueleto inicial para la prueba técnica solicitada por Double V Partners / NYX. Separamos el backend en Spring Boot y el frontend en NestJS, ambos listos para ejecutarse de forma independiente o mediante Docker Compose.
 
 ## Estructura
 - `backend/`: API REST con Spring Boot 3.3.x, H2 en memoria, validaciones y soporte para OpenAPI.
 - `frontend/`: API Gateway / BFF con NestJS 11 listo para conectarse al backend.
-- `docker-compose.yml`: OrquestaciÃ³n local de ambos servicios.
+- `docker-compose.yml`: Orquestación local de ambos servicios.
 
 ## Requisitos previos
 - Java 17+
@@ -15,17 +15,16 @@ Este repositorio contiene el esqueleto inicial para la prueba tÃ©cnica solicit
 
 ## Cómo levantar el proyecto
 
-### Opción 1: Levantar con Docker Compose (Recomendado) 🐳
+### Opción 1: Levantar con Docker Compose 🐳
 
-> 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
 
 #### Pasos rápidos:
 
-1. **Asegúrate de tener Docker Desktop instalado y corriendo**
-   - Descarga desde: https://www.docker.com/products/docker-desktop/
-   - Inicia Docker Desktop y espera a que esté listo (verás el ícono de Docker en la bandeja del sistema)
+1. **Se asegura que Docker Desktop esté instalado y corriendo**
+   - Se descarga desde: https://www.docker.com/products/docker-desktop/
+   - Se inicia Docker Desktop y se espera a que esté listo (se verá el ícono de Docker en la bandeja del sistema)
 
-2. **Verifica la instalación:**
+2. **Se verifica la instalación:**
 ```bash
 docker --version
 docker compose version
@@ -40,9 +39,9 @@ docker compose version
 docker compose up --build
 ```
 
-4. **Espera a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
+4. **Esperar a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
 
-5. **Verifica que todo funciona:**
+5. **Se verifica que todo funciona:**
    - **Backend API**: http://localhost:8080
    - **Swagger UI**: http://localhost:8080/swagger-ui.html
    - **API Docs (JSON)**: http://localhost:8080/api/docs
@@ -51,23 +50,23 @@ docker compose up --build
 
 6. **Para detener los servicios:**
 ```bash
-# Presiona Ctrl+C en la terminal donde corre Docker
-# O ejecuta en otra terminal:
+# Se presiona Ctrl+C en la terminal donde corre Docker
+# O se ejecuta en otra terminal:
 docker compose down
 ```
 
-> 💡 **Tip:** Usa el script `.\verificar-proyecto.ps1` para verificar automáticamente que todo esté funcionando correctamente.
+> 💡 **Tip:** Se usa el script `.\verificar-proyecto.ps1` para verificar automáticamente que todo esté funcionando correctamente.
 
 ### Opción 2: Levantar manualmente (paso a paso)
 
 #### Paso 1: Levantar el Backend (Spring Boot)
 
-1. Abre una terminal y navega al directorio del backend:
+1. Se abre una terminal y se navega al directorio del backend:
 ```bash
 cd backend
 ```
 
-2. Ejecuta el backend usando Maven Wrapper:
+2. Se ejecuta el backend usando Maven Wrapper:
 ```bash
 # En Windows (PowerShell)
 .\mvnw.cmd spring-boot:run
@@ -76,7 +75,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-3. Espera a que el backend inicie. Verás un mensaje similar a:
+3. Se espera a que el backend inicie. Se verá un mensaje similar a:
 ```
 Started EventBackendApplication in X.XXX seconds
 ```
@@ -89,10 +88,10 @@ Started EventBackendApplication in X.XXX seconds
 
 #### Paso 2: Obtener token JWT
 
-Antes de usar la API, necesitas autenticarte:
+Antes de usar la API, se necesita autenticar:
 
-1. Abre otra terminal o usa Postman/Thunder Client
-2. Realiza una petición POST a `http://localhost:8080/api/auth/login`:
+1. Se abre otra terminal o se usa Postman/Thunder Client
+2. Se realiza una petición POST a `http://localhost:8080/api/auth/login`:
 ```json
 {
   "username": "admin",
@@ -100,7 +99,7 @@ Antes de usar la API, necesitas autenticarte:
 }
 ```
 
-3. Copia el token que recibes en la respuesta:
+3. Se copia el token que se recibe en la respuesta:
 ```json
 {
   "token": "eyJhbGciOiJIUzM4NCJ9...",
@@ -108,26 +107,26 @@ Antes de usar la API, necesitas autenticarte:
 }
 ```
 
-4. Usa este token en todas las peticiones posteriores agregando el header:
+4. Se usa este token en todas las peticiones posteriores agregando el header:
 ```
 Authorization: Bearer <tu-token-aqui>
 ```
 
-> 💡 **Tip:** También puedes usar Swagger UI para obtener el token. Ve a http://localhost:8080/swagger-ui.html, prueba el endpoint `/api/auth/login`, copia el token y luego haz clic en "Authorize" (arriba a la derecha) para configurarlo.
+> 💡 **Tip:** También se puede usar Swagger UI para obtener el token. Se va a http://localhost:8080/swagger-ui.html, se prueba el endpoint `/api/auth/login`, se copia el token y luego se hace clic en "Authorize" (arriba a la derecha) para configurarlo.
 
 #### Paso 3: Levantar el Frontend (NestJS)
 
-1. Abre una **nueva terminal** (deja el backend corriendo) y navega al directorio del frontend:
+1. Se abre una **nueva terminal** (se deja el backend corriendo) y se navega al directorio del frontend:
 ```bash
 cd frontend
 ```
 
-2. Instala las dependencias (solo la primera vez):
+2. Se instalan las dependencias (solo la primera vez):
 ```bash
 npm install
 ```
 
-3. Configura las variables de entorno (opcional, tiene valores por defecto):
+3. Se configuran las variables de entorno (opcional, tiene valores por defecto):
 ```bash
 # En Windows (PowerShell)
 $env:API_BASE_URL="http://localhost:8080"
@@ -140,7 +139,7 @@ export API_USERNAME=admin
 export API_PASSWORD=admin123
 ```
 
-4. Inicia el frontend en modo desarrollo:
+4. Se inicia el frontend en modo desarrollo:
 ```bash
 npm run start:dev
 ```
@@ -153,7 +152,7 @@ npm run start:dev
 
 ### Método 1: Script automatizado (Recomendado)
 
-Ejecuta el script de verificación que comprueba automáticamente todos los servicios:
+Se ejecuta el script de verificación que comprueba automáticamente todos los servicios:
 
 ```powershell
 .\verificar-proyecto.ps1
@@ -173,7 +172,7 @@ Este script verifica:
 docker ps
 ```
 
-Deberías ver dos contenedores corriendo:
+Se deberían ver dos contenedores corriendo:
 - `event-platform-backend-1` en puerto `8080`
 - `event-platform-frontend-1` en puerto `3000`
 
@@ -186,26 +185,26 @@ docker logs event-platform-backend-1 --tail 20
 docker logs event-platform-frontend-1 --tail 20
 ```
 
-Busca estos mensajes:
+Se buscan estos mensajes:
 - **Backend**: `Started EventBackendApplication` o `Tomcat started`
 - **Frontend**: `Nest application successfully started` o `listening`
 
 #### 3. Verificar endpoints en el navegador
 
-Abre tu navegador y visita:
+Se abre el navegador y se visita:
 
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
-  - Deberías ver la documentación interactiva de la API
+  - Se debería ver la documentación interactiva de la API
   
 - **API Docs (JSON)**: http://localhost:8080/api/docs
-  - Deberías ver el JSON de la especificación OpenAPI
+  - Se debería ver el JSON de la especificación OpenAPI
 
 - **Frontend**: http://localhost:3000
-  - Deberías ver una respuesta (puede ser un error 404 si no hay ruta raíz, pero el servidor debe responder)
+  - Se debería ver una respuesta (puede ser un error 404 si no hay ruta raíz, pero el servidor debe responder)
 
 #### 4. Probar el login
 
-Usa PowerShell, Postman, o curl:
+Se usa PowerShell, Postman, o curl:
 
 ```powershell
 # PowerShell
@@ -233,7 +232,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 
 #### 5. Probar un endpoint protegido
 
-Usa el token obtenido en el paso anterior:
+Se usa el token obtenido en el paso anterior:
 
 ```powershell
 # PowerShell
@@ -287,7 +286,7 @@ curl -X GET http://localhost:8080/api/users \
 
 ### Opción 1: Script automatizado de pruebas (Recomendado)
 
-Ejecuta el script que crea usuarios y tickets de ejemplo, y prueba todas las funcionalidades:
+Se ejecuta el script que crea usuarios y tickets de ejemplo, y prueba todas las funcionalidades:
 
 ```powershell
 .\probar-api.ps1
@@ -533,19 +532,19 @@ curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655
 
 ### Opción 3: Usar Swagger UI (Interfaz gráfica)
 
-1. Abre tu navegador en: http://localhost:8080/swagger-ui.html
-2. Haz clic en el endpoint `/api/auth/login` y luego en "Try it out"
-3. Ingresa las credenciales:
+1. Se abre el navegador en: http://localhost:8080/swagger-ui.html
+2. Se hace clic en el endpoint `/api/auth/login` y luego en "Try it out"
+3. Se ingresan las credenciales:
    ```json
    {
      "username": "admin",
      "password": "admin123"
    }
    ```
-4. Haz clic en "Execute" y copia el token JWT de la respuesta
-5. Haz clic en el botón "Authorize" (arriba a la derecha)
-6. Ingresa: `Bearer <tu-token-aqui>` y haz clic en "Authorize"
-7. Ahora puedes probar todos los endpoints directamente desde Swagger
+4. Se hace clic en "Execute" y se copia el token JWT de la respuesta
+5. Se hace clic en el botón "Authorize" (arriba a la derecha)
+6. Se ingresa: `Bearer <tu-token-aqui>` y se hace clic en "Authorize"
+7. Ahora se pueden probar todos los endpoints directamente desde Swagger
 
 ### Opción 4: Usar el Frontend BFF
 
@@ -564,13 +563,13 @@ Invoke-RestMethod -Uri "http://localhost:3000/tickets" -Headers $headers
 
 ### Ver los datos en la base de datos H2
 
-1. Abre tu navegador en: http://localhost:8080/h2-console
-2. Ingresa los siguientes datos:
+1. Se abre el navegador en: http://localhost:8080/h2-console
+2. Se ingresan los siguientes datos:
    - **JDBC URL**: `jdbc:h2:mem:eventdb`
    - **Usuario**: `sa`
    - **Password**: `sa`
-3. Haz clic en "Connect"
-4. Ejecuta consultas SQL:
+3. Se hace clic en "Connect"
+4. Se ejecutan consultas SQL:
    ```sql
    -- Ver todos los usuarios
    SELECT * FROM users;
@@ -632,34 +631,34 @@ Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` f
 ## Solución de problemas comunes
 
 ### El backend no inicia
-- Verifica que tengas Java 17+ instalado: `java -version`
-- Asegúrate de estar en el directorio `backend/`
-- Si hay errores de puerto, verifica que el puerto 8080 no esté en uso
+- Se verifica que se tenga Java 17+ instalado: `java -version`
+- Se asegura de estar en el directorio `backend/`
+- Si hay errores de puerto, se verifica que el puerto 8080 no esté en uso
 
 ### El frontend no se conecta al backend
-- Verifica que el backend esté corriendo en `http://localhost:8080`
-- Revisa las variables de entorno `API_BASE_URL`, `API_USERNAME`, `API_PASSWORD`
-- Asegúrate de que ambos servicios estén en la misma red (si usas Docker)
+- Se verifica que el backend esté corriendo en `http://localhost:8080`
+- Se revisan las variables de entorno `API_BASE_URL`, `API_USERNAME`, `API_PASSWORD`
+- Se asegura de que ambos servicios estén en la misma red (si se usa Docker)
 
 ### Error 401/403 en las peticiones
-- Asegúrate de haber obtenido un token JWT válido desde `/api/auth/login`
-- Verifica que el header `Authorization: Bearer <token>` esté presente
-- El token expira después de 24 horas, obtén uno nuevo si es necesario
+- Se asegura de haber obtenido un token JWT válido desde `/api/auth/login`
+- Se verifica que el header `Authorization: Bearer <token>` esté presente
+- El token expira después de 24 horas, se obtiene uno nuevo si es necesario
 
 ### Error al ejecutar Maven Wrapper
-- En Windows, usa `.\mvnw.cmd` en lugar de `./mvnw`
-- Asegúrate de tener permisos de ejecución en el archivo `mvnw` (Linux/Mac): `chmod +x mvnw`
+- En Windows, se usa `.\mvnw.cmd` en lugar de `./mvnw`
+- Se asegura de tener permisos de ejecución en el archivo `mvnw` (Linux/Mac): `chmod +x mvnw`
 
 ## Seguridad
-El backend utiliza autenticaciÃ³n JWT (JSON Web Tokens) con usuarios en memoria:
+El backend utiliza autenticación JWT (JSON Web Tokens) con usuarios en memoria:
 
-| Usuario | Rol  | ContraseÃ±a |
-|---------|------|-------------|
+| Usuario | Rol  | Contraseña |
+|---------|------|------------|
 | admin   | ADMIN| `admin123`  |
 | analyst | USER | `analyst123`|
 
-### AutenticaciÃ³n
-1. Obtener token JWT: `POST /api/auth/login` con `{"username": "admin", "password": "admin123"}`
-2. Usar el token: Incluir en el header `Authorization: Bearer <token>`
+### Autenticación
+1. Se obtiene el token JWT: `POST /api/auth/login` con `{"username": "admin", "password": "admin123"}`
+2. Se usa el token: Se incluye en el header `Authorization: Bearer <token>`
 
-`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear, actualizar o eliminar recursos. Los recursos de Swagger y H2 permanecen pÃºblicos para facilitar las pruebas locales.
+`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear, actualizar o eliminar recursos. Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas locales.

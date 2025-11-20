@@ -12,25 +12,25 @@
 
 ### 1.1 Descargar Docker Desktop
 
-1. Abre tu navegador y ve a: **https://www.docker.com/products/docker-desktop/**
-2. Haz clic en el botón **"Download for Windows"**
+1. Se abre el navegador y se va a: **https://www.docker.com/products/docker-desktop/**
+2. Se hace clic en el botón **"Download for Windows"**
 3. Se descargará el archivo `Docker Desktop Installer.exe` (aproximadamente 500MB)
 
 ### 1.2 Instalar Docker Desktop
 
-1. **Ejecuta el instalador** que acabas de descargar
-2. Acepta los términos y condiciones
-3. **Marca la casilla**: "Use WSL 2 instead of Hyper-V" (recomendado)
-4. Haz clic en **"Ok"** para iniciar la instalación
-5. Espera a que termine la instalación (puede tomar varios minutos)
-6. **Reinicia tu computadora** si se te solicita
+1. **Se ejecuta el instalador** que se acaba de descargar
+2. Se aceptan los términos y condiciones
+3. **Se marca la casilla**: "Use WSL 2 instead of Hyper-V" (recomendado)
+4. Se hace clic en **"Ok"** para iniciar la instalación
+5. Se espera a que termine la instalación (puede tomar varios minutos)
+6. **Se reinicia la computadora** si se solicita
 
 ### 1.3 Iniciar Docker Desktop
 
-1. Busca **"Docker Desktop"** en el menú de inicio de Windows
-2. Haz clic para abrirlo
-3. Espera a que Docker Desktop se inicie completamente
-4. Verás el ícono de Docker (ballena) en la **bandeja del sistema** (tray, abajo a la derecha)
+1. Se busca **"Docker Desktop"** en el menú de inicio de Windows
+2. Se hace clic para abrirlo
+3. Se espera a que Docker Desktop se inicie completamente
+4. Se verá el ícono de Docker (ballena) en la **bandeja del sistema** (tray, abajo a la derecha)
 5. Cuando el ícono deje de animarse, Docker está listo
 
 **⚠️ Importante**: Docker Desktop debe estar corriendo antes de continuar.
@@ -39,23 +39,23 @@
 
 ## PASO 2: Verificar la Instalación
 
-Abre **PowerShell** o **Terminal** y ejecuta:
+Se abre **PowerShell** o **Terminal** y se ejecuta:
 
 ```powershell
 docker --version
 ```
 
-Deberías ver algo como: `Docker version 24.0.x, build xxxxx`
+Se debería ver algo como: `Docker version 24.0.x, build xxxxx`
 
-Luego verifica Docker Compose:
+Luego se verifica Docker Compose:
 
 ```powershell
 docker compose version
 ```
 
-Deberías ver algo como: `Docker Compose version v2.x.x`
+Se debería ver algo como: `Docker Compose version v2.x.x`
 
-**Si ves errores**: Asegúrate de que Docker Desktop esté corriendo y reinicia la terminal.
+**Si se ven errores**: Se asegura de que Docker Desktop esté corriendo y se reinicia la terminal.
 
 ---
 
@@ -63,7 +63,7 @@ Deberías ver algo como: `Docker Compose version v2.x.x`
 
 ### 3.1 Navegar al Directorio del Proyecto
 
-Abre PowerShell o Terminal y navega a la carpeta del proyecto:
+Se abre PowerShell o Terminal y se navega a la carpeta del proyecto:
 
 ```powershell
 cd "E:\Pruebas Tecnicas\Double V\event_project"
@@ -71,12 +71,12 @@ cd "E:\Pruebas Tecnicas\Double V\event_project"
 
 ### 3.2 Verificar que tienes los archivos necesarios
 
-Verifica que existan estos archivos:
+Se verifica que existan estos archivos:
 - `docker-compose.yml` (en la raíz)
 - `backend/` (directorio)
 - `frontend/` (directorio)
 
-Puedes verificar con:
+Se puede verificar con:
 
 ```powershell
 ls docker-compose.yml
@@ -90,7 +90,7 @@ ls frontend
 
 ### 4.1 Opción Automática (Recomendada)
 
-Ejecuta el script que creamos:
+Se ejecuta el script que se creó:
 
 ```powershell
 .\levantar-proyecto-docker.ps1
@@ -104,7 +104,7 @@ Este script:
 
 ### 4.2 Opción Manual
 
-Si prefieres hacerlo manualmente:
+Si se prefiere hacerlo manualmente:
 
 ```powershell
 docker compose up --build
@@ -122,7 +122,7 @@ La primera vez puede tomar **5-10 minutos** porque:
 3. Instala dependencias del frontend (npm)
 4. Construye las imágenes finales
 
-Verás muchos mensajes en la consola. **Es normal**. Busca estos mensajes al final:
+Se verán muchos mensajes en la consola. **Es normal**. Se buscan estos mensajes al final:
 
 ```
 backend  | Started EventBackendApplication in X.XXX seconds
@@ -135,10 +135,10 @@ frontend | [Nest] Application is running on: http://[::1]:3000
 
 ### 5.1 Verificar Backend
 
-Abre tu navegador y ve a:
+Se abre el navegador y se va a:
 
 - **API Backend**: http://localhost:8080
-- **Swagger UI**: http://localhost:8080/api/swagger
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **H2 Console**: http://localhost:8080/h2-console
 
 ### 5.2 Verificar Frontend
@@ -148,9 +148,9 @@ Abre tu navegador y ve a:
 
 ### 5.3 Obtener Token JWT
 
-Para usar la API, necesitas autenticarte:
+Para usar la API, se necesita autenticar:
 
-1. Abre **Postman**, **Thunder Client** o usa **curl**:
+1. Se abre **Postman**, **Thunder Client** o se usa **curl**:
 
 ```powershell
 curl -X POST http://localhost:8080/api/auth/login `
@@ -158,8 +158,8 @@ curl -X POST http://localhost:8080/api/auth/login `
   -d '{\"username\":\"admin\",\"password\":\"admin123\"}'
 ```
 
-2. Copia el token de la respuesta
-3. Úsalo en las peticiones siguientes con el header:
+2. Se copia el token de la respuesta
+3. Se usa en las peticiones siguientes con el header:
    ```
    Authorization: Bearer <tu-token>
    ```
@@ -168,11 +168,11 @@ curl -X POST http://localhost:8080/api/auth/login `
 
 ## PASO 6: Detener los Servicios
 
-Cuando quieras detener los servicios:
+Cuando se quiera detener los servicios:
 
-1. Ve a la terminal donde está corriendo Docker Compose
-2. Presiona **Ctrl + C**
-3. Espera a que los contenedores se detengan
+1. Se va a la terminal donde está corriendo Docker Compose
+2. Se presiona **Ctrl + C**
+3. Se espera a que los contenedores se detengan
 
 O en otra terminal:
 
@@ -191,23 +191,23 @@ docker compose down -v
 ## 🐛 Solución de Problemas
 
 ### Error: "Docker daemon is not running"
-**Solución**: Inicia Docker Desktop y espera a que esté completamente iniciado.
+**Solución**: Se inicia Docker Desktop y se espera a que esté completamente iniciado.
 
 ### Error: "Port already in use"
 **Solución**: 
-- Verifica que no tengas otros servicios usando los puertos 8080 o 3000
-- O cambia los puertos en `docker-compose.yml`
+- Se verifica que no se tengan otros servicios usando los puertos 8080 o 3000
+- O se cambian los puertos en `docker-compose.yml`
 
 ### Error: "Cannot connect to Docker daemon"
 **Solución**: 
-- Reinicia Docker Desktop
-- Asegúrate de que WSL 2 esté habilitado
+- Se reinicia Docker Desktop
+- Se asegura de que WSL 2 esté habilitado
 
 ### Los servicios no inician
 **Solución**:
-1. Detén los servicios: `docker compose down`
-2. Limpia las imágenes: `docker compose down --rmi all`
-3. Vuelve a levantar: `docker compose up --build`
+1. Se detienen los servicios: `docker compose down`
+2. Se limpian las imágenes: `docker compose down --rmi all`
+3. Se vuelve a levantar: `docker compose up --build`
 
 ### Ver logs de un servicio específico
 ```powershell
@@ -248,12 +248,14 @@ docker stats
 - [ ] `docker compose version` funciona
 - [ ] Estás en el directorio del proyecto
 - [ ] `docker-compose.yml` existe
-- [ ] Ejecutaste `docker compose up --build`
+- [ ] Se ejecutó `docker compose up --build`
 - [ ] Backend disponible en http://localhost:8080
 - [ ] Frontend disponible en http://localhost:3000
-- [ ] Puedes obtener un token JWT desde `/api/auth/login`
+- [ ] Se puede obtener un token JWT desde `/api/auth/login`
 
 ---
 
 ¡Listo! Tu proyecto debería estar corriendo con Docker. 🚀
+
+
 

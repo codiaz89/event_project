@@ -28,6 +28,12 @@ npm run start:dev
 ```
 El gateway iniciarÃ¡ en `http://localhost:3000`.
 
+### Endpoints BFF disponibles
+- `GET /health`
+- `GET /users`, `GET /users/:id`, `POST /users`, `PUT /users/:id`
+- `GET /tickets`, `GET /tickets/:id`, `POST /tickets`, `PUT /tickets/:id`
+- `GET /tickets/user/:userId`
+
 ## Ejecutar con Docker Compose
 ```
 docker compose up --build

@@ -18,3 +18,9 @@ backend/mvnw.cmd
 frontend/node_modules/
 frontend/dist/
 frontend/.turbo/
+
+.git-msg-filter.sh
+run-filter.sh
+show-originals.sh
+verify-messages.sh
+corregir-commits.ps1

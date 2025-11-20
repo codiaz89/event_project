@@ -17,21 +17,37 @@ Este repositorio contiene el esqueleto inicial para la prueba técnica solicitad
 
 ## Cómo levantar el proyecto
 
-### Opción 1: Levantar con Docker Compose 🐳
+### Opción 1: Levantar con Docker Compose 🐳 (Recomendado)
 
-#### Pasos rápidos:
+Esta es la forma más sencilla de levantar todo el proyecto. Docker Compose se encarga de construir las imágenes, levantar los contenedores y configurar la red entre servicios.
 
-1. **Se asegura que Docker Desktop esté instalado y corriendo**
-   - Se descarga desde: https://www.docker.com/products/docker-desktop/
-   - Se inicia Docker Desktop y se espera a que esté listo (se verá el ícono de Docker en la bandeja del sistema)
+#### Requisitos previos
 
-2. **Se verifica la instalación:**
+1. **Docker Desktop instalado y corriendo**
+   - Descarga desde: https://www.docker.com/products/docker-desktop/
+   - Instala Docker Desktop siguiendo las instrucciones del instalador
+   - Inicia Docker Desktop y espera a que esté completamente listo (el ícono de Docker en la bandeja del sistema debe estar estable)
+
+2. **Verificar la instalación:**
 ```bash
 docker --version
 docker compose version
 ```
 
-3. **Desde la raíz del proyecto, se ejecuta:**
+Deberías ver algo como:
+```
+Docker version 24.0.x, build xxxxx
+Docker Compose version v2.x.x
+```
+
+#### Pasos para levantar el proyecto
+
+1. **Navegar a la raíz del proyecto:**
+```bash
+cd "E:\Pruebas Tecnicas\Double V\event_project"
+```
+
+2. **Levantar los servicios:**
 ```bash
 # Opción A: Usar el script automatizado (Windows - Recomendado)
 .\levantar-proyecto-docker.ps1
@@ -40,21 +56,102 @@ docker compose version
 docker compose up --build
 ```
 
-4. **Se espera a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
+> **Nota:** La primera vez puede tomar 5-10 minutos mientras:
+> - Descarga las imágenes base (Java, Node.js)
+> - Compila el backend (Maven)
+> - Instala dependencias del frontend (npm)
+> - Construye las imágenes finales
 
-5. **Se verifica que todo funciona:**
-   - **Backend API**: http://localhost:8080
-   - **Swagger UI**: http://localhost:8080/swagger-ui.html
-   - **API Docs (JSON)**: http://localhost:8080/api/docs
-   - **H2 Console**: http://localhost:8080/h2-console
-   - **Frontend BFF**: http://localhost:3000
+3. **Verificar que los servicios están corriendo:**
 
-6. **Para detener los servicios:**
+Se abren dos terminales y se ejecuta:
 ```bash
-# Se presiona Ctrl+C en la terminal donde corre Docker
-# O se ejecuta en otra terminal:
-docker compose down
+# Ver contenedores activos
+docker ps
 ```
+
+Deberías ver dos contenedores:
+- `event-platform-backend-1` en puerto `8080`
+- `event-platform-frontend-1` en puerto `3000`
+
+4. **Verificar que los servicios responden:**
+
+Se abren en el navegador:
+- **Backend API**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **API Docs (JSON)**: http://localhost:8080/api/docs
+- **H2 Console**: http://localhost:8080/h2-console
+- **Frontend BFF**: http://localhost:3000/health
+
+5. **Ver logs de los servicios (opcional):**
+```bash
+# Ver logs de todos los servicios
+docker compose logs -f
+
+# Ver logs solo del backend
+docker compose logs -f backend
+
+# Ver logs solo del frontend
+docker compose logs -f frontend
+```
+
+#### Comandos útiles de Docker
+
+```bash
+# Detener los servicios (mantiene los contenedores)
+docker compose stop
+
+# Iniciar los servicios (sin reconstruir)
+docker compose start
+
+# Detener y eliminar contenedores
+docker compose down
+
+# Detener, eliminar contenedores y volúmenes
+docker compose down -v
+
+# Reconstruir solo un servicio específico
+docker compose up --build backend
+
+# Ver estado de los servicios
+docker compose ps
+
+# Ver uso de recursos
+docker stats
+```
+
+#### Solución de problemas comunes con Docker
+
+**Error: "Docker daemon is not running"**
+- Se verifica que Docker Desktop esté corriendo
+- Se espera 1-2 minutos después de iniciar Docker Desktop
+- Se reinicia Docker Desktop si es necesario
+
+**Error: "Port already in use"**
+- Se verifica que los puertos 8080 y 3000 no estén en uso:
+  ```bash
+  # Windows
+  netstat -ano | findstr :8080
+  netstat -ano | findstr :3000
+  
+  # Linux/Mac
+  lsof -i :8080
+  lsof -i :3000
+  ```
+- Se detienen los servicios que usan esos puertos o se cambian los puertos en `docker-compose.yml`
+
+**Los servicios no inician correctamente**
+- Se revisan los logs: `docker compose logs`
+- Se reconstruye sin caché: `docker compose build --no-cache`
+- Se limpia todo y se vuelve a levantar:
+  ```bash
+  docker compose down -v
+  docker compose up --build
+  ```
+
+**Los contenedores se detienen inmediatamente**
+- Se revisan los logs: `docker compose logs backend` y `docker compose logs frontend`
+- Se verifica que no haya errores de compilación o configuración
 
 > 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
 

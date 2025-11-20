@@ -35,7 +35,16 @@ docker compose up --build
 Esto levanta ambos servicios y abre los mismos puertos (`8080` backend, `3000` frontend) dentro de la misma red para facilitar las llamadas internas.
 
 ## Siguientes pasos
-1. Modelar las entidades `Usuario` y `Ticket` en el backend.
-2. Exponer los endpoints CRUD y filtros descritos en la prueba.
-3. Implementar la capa BFF en NestJS y conectar ambos servicios mediante DTOs compartidos.
-4. Agregar pruebas unitarias e integraciÃ³n, ademÃ¡s de seguridad y documentaciÃ³n detallada.
+1. Construir las rutas del frontend en NestJS que consuman los endpoints creados.
+2. Extender la documentaciÃ³n OpenAPI con ejemplos y colecciones de pruebas automatizadas.
+3. Incorporar nuevas funcionalidades (asignaciones, mÃ©tricas, notificaciones) y pruebas end-to-end.
+
+## Seguridad
+El backend utiliza autenticaciÃ³n HTTP Basic con usuarios en memoria:
+
+| Usuario | Rol  | ContraseÃ±a |
+|---------|------|-------------|
+| admin   | ADMIN| `admin123`  |
+| analyst | USER | `analyst123`|
+
+`USER` puede consumir endpoints GET, mientras que `ADMIN` puede crear o actualizar recursos. Los recursos de Swagger y H2 permanecen pÃºblicos para facilitar las pruebas locales.

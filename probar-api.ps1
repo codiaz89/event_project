@@ -15,9 +15,17 @@ try {
     } | ConvertTo-Json
     
     $loginResponse = Invoke-RestMethod -Uri "$baseUrl/api/auth/login" -Method POST -Body $loginBody -ContentType "application/json"
-    $token = $loginResponse.jwtToken
+    if ($loginResponse.jwtToken) {
+        $token = $loginResponse.jwtToken
+    } elseif ($loginResponse.token) {
+        $token = $loginResponse.token
+    } else {
+        throw "No se encontró token en la respuesta"
+    }
     Write-Host "   OK: Token obtenido exitosamente" -ForegroundColor Green
-    Write-Host "   Token: $($token.Substring(0, 50))..." -ForegroundColor Gray
+    if ($token) {
+        Write-Host "   Token: $($token.Substring(0, [Math]::Min(50, $token.Length)))..." -ForegroundColor Gray
+    }
 } catch {
     Write-Host "   ERROR: No se pudo obtener el token" -ForegroundColor Red
     Write-Host "   Detalles: $($_.Exception.Message)" -ForegroundColor Red

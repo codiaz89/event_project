@@ -4,6 +4,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -34,9 +36,21 @@ public class OpenApiConfig {
                 "Proporciona operaciones CRUD completas con soporte para filtrado y paginación.")
             .license(license);
 
+        SecurityScheme securityScheme = new SecurityScheme()
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("bearer")
+            .bearerFormat("JWT")
+            .description("Ingresa el token JWT obtenido del endpoint /api/auth/login. Formato: Bearer <token>");
+
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+            .addList("bearerAuth");
+
         return new OpenAPI()
             .info(info)
-            .servers(List.of(localServer));
+            .servers(List.of(localServer))
+            .components(new io.swagger.v3.oas.models.Components()
+                .addSecuritySchemes("bearerAuth", securityScheme))
+            .addSecurityItem(securityRequirement);
     }
 }
 

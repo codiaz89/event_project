@@ -276,9 +276,310 @@ curl -X GET http://localhost:8080/api/users \
 - `PUT /tickets/:id` - Actualizar ticket
 - `GET /tickets/user/:userId` - Obtener tickets de un usuario específico
 
-## Ejemplos de uso
+## Cómo usar el proyecto con datos reales
 
-### 1. Crear un usuario
+### Opción 1: Script automatizado de pruebas (Recomendado)
+
+Ejecuta el script que crea usuarios y tickets de ejemplo, y prueba todas las funcionalidades:
+
+```powershell
+.\probar-api.ps1
+```
+
+Este script realiza automáticamente:
+- ✅ Autenticación y obtención de token JWT
+- ✅ Creación de 3 usuarios de ejemplo
+- ✅ Creación de tickets de prueba
+- ✅ Listado de todos los recursos
+- ✅ Filtrado de tickets por estado
+- ✅ Búsqueda de tickets por usuario
+- ✅ Actualización de usuarios y tickets
+- ✅ Prueba del frontend BFF
+
+### Opción 2: Prueba manual paso a paso
+
+#### Paso 1: Obtener token JWT
+
+```powershell
+# PowerShell
+$body = @{
+    username = "admin"
+    password = "admin123"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -Body $body -ContentType "application/json"
+$token = $response.jwtToken
+Write-Host "Token: $token"
+```
+
+O con curl:
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+**Respuesta:**
+```json
+{
+  "jwtToken": "eyJhbGciOiJIUzM4NCJ9.eyJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NjM2NjM1NjAsImV4cCI6MTc2Mzc0OTk2MH0..."
+}
+```
+
+#### Paso 2: Crear usuarios
+
+```powershell
+# PowerShell
+$headers = @{
+    Authorization = "Bearer $token"
+    "Content-Type" = "application/json"
+}
+
+$user1 = @{
+    firstName = "Juan"
+    lastName = "Pérez"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method POST -Headers $headers -Body $user1
+$userId1 = $response.id
+Write-Host "Usuario creado: $($response.firstName) $($response.lastName) - ID: $userId1"
+```
+
+O con curl:
+```bash
+curl -X POST http://localhost:8080/api/users \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Juan","lastName":"Pérez"}'
+```
+
+**Respuesta:**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "firstName": "Juan",
+  "lastName": "Pérez",
+  "createdAt": "2025-11-20T18:30:00.000Z",
+  "updatedAt": "2025-11-20T18:30:00.000Z"
+}
+```
+
+#### Paso 3: Crear tickets
+
+```powershell
+# PowerShell
+$ticket = @{
+    description = "Problema con acceso al sistema de eventos"
+    userId = $userId1
+    status = "ABIERTO"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets" -Method POST -Headers $headers -Body $ticket
+$ticketId = $response.id
+Write-Host "Ticket creado: $($response.description) - ID: $ticketId"
+```
+
+O con curl:
+```bash
+curl -X POST http://localhost:8080/api/tickets \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Problema con acceso al sistema de eventos",
+    "userId": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "ABIERTO"
+  }'
+```
+
+**Respuesta:**
+```json
+{
+  "id": "660e8400-e29b-41d4-a716-446655440001",
+  "description": "Problema con acceso al sistema de eventos",
+  "status": "ABIERTO",
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "createdAt": "2025-11-20T18:30:00.000Z",
+  "updatedAt": "2025-11-20T18:30:00.000Z"
+}
+```
+
+#### Paso 4: Listar usuarios
+
+```powershell
+# PowerShell
+$users = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method GET -Headers $headers
+$users | ForEach-Object { Write-Host "$($_.firstName) $($_.lastName) - $($_.id)" }
+```
+
+O con curl:
+```bash
+curl -X GET http://localhost:8080/api/users \
+  -H "Authorization: Bearer $token"
+```
+
+#### Paso 5: Listar tickets con filtros
+
+```powershell
+# PowerShell - Filtrar por estado
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO" -Method GET -Headers $headers
+Write-Host "Tickets abiertos: $($tickets.totalElements)"
+
+# Filtrar por usuario y estado
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?status=ABIERTO&userId=$userId1" -Method GET -Headers $headers
+Write-Host "Tickets del usuario: $($tickets.totalElements)"
+
+# Con paginación
+$tickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets?page=0&size=10" -Method GET -Headers $headers
+Write-Host "Página 1: $($tickets.content.Count) tickets de $($tickets.totalElements) totales"
+```
+
+O con curl:
+```bash
+# Filtrar por estado
+curl -X GET "http://localhost:8080/api/tickets?status=ABIERTO" \
+  -H "Authorization: Bearer $token"
+
+# Filtrar por usuario y estado
+curl -X GET "http://localhost:8080/api/tickets?status=ABIERTO&userId=550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer $token"
+
+# Con paginación
+curl -X GET "http://localhost:8080/api/tickets?page=0&size=10" \
+  -H "Authorization: Bearer $token"
+```
+
+#### Paso 6: Obtener tickets de un usuario específico
+
+```powershell
+# PowerShell
+$userTickets = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/user/$userId1" -Method GET -Headers $headers
+Write-Host "El usuario tiene $($userTickets.Count) tickets"
+$userTickets | ForEach-Object { Write-Host "  - [$($_.status)] $($_.description)" }
+```
+
+O con curl:
+```bash
+curl -X GET "http://localhost:8080/api/tickets/user/550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer $token"
+```
+
+#### Paso 7: Actualizar un ticket
+
+```powershell
+# PowerShell
+$updateData = @{
+    description = "Problema con acceso al sistema [RESUELTO]"
+    userId = $userId1
+    status = "CERRADO"
+} | ConvertTo-Json
+
+$updatedTicket = Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/$ticketId" -Method PUT -Headers $headers -Body $updateData
+Write-Host "Ticket actualizado: Estado = $($updatedTicket.status)"
+```
+
+O con curl:
+```bash
+curl -X PUT "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655440001" \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Problema con acceso al sistema [RESUELTO]",
+    "userId": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "CERRADO"
+  }'
+```
+
+#### Paso 8: Actualizar un usuario
+
+```powershell
+# PowerShell
+$updateData = @{
+    firstName = "Juan Carlos"
+    lastName = "Pérez"
+} | ConvertTo-Json
+
+$updatedUser = Invoke-RestMethod -Uri "http://localhost:8080/api/users/$userId1" -Method PUT -Headers $headers -Body $updateData
+Write-Host "Usuario actualizado: $($updatedUser.firstName) $($updatedUser.lastName)"
+```
+
+O con curl:
+```bash
+curl -X PUT "http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer $token" \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Juan Carlos","lastName":"Pérez"}'
+```
+
+#### Paso 9: Eliminar un ticket
+
+```powershell
+# PowerShell
+Invoke-RestMethod -Uri "http://localhost:8080/api/tickets/$ticketId" -Method DELETE -Headers $headers
+Write-Host "Ticket eliminado"
+```
+
+O con curl:
+```bash
+curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655440001" \
+  -H "Authorization: Bearer $token"
+```
+
+### Opción 3: Usar Swagger UI (Interfaz gráfica)
+
+1. Abre tu navegador en: http://localhost:8080/api/swagger
+2. Haz clic en el endpoint `/api/auth/login` y luego en "Try it out"
+3. Ingresa las credenciales:
+   ```json
+   {
+     "username": "admin",
+     "password": "admin123"
+   }
+   ```
+4. Haz clic en "Execute" y copia el token JWT de la respuesta
+5. Haz clic en el botón "Authorize" (arriba a la derecha)
+6. Ingresa: `Bearer <tu-token-aqui>` y haz clic en "Authorize"
+7. Ahora puedes probar todos los endpoints directamente desde Swagger
+
+### Opción 4: Usar el Frontend BFF
+
+El frontend actúa como un BFF (Backend for Frontend) y expone los mismos endpoints:
+
+```powershell
+# Health check
+Invoke-RestMethod -Uri "http://localhost:3000/health"
+
+# Listar usuarios (requiere autenticación en el backend)
+Invoke-RestMethod -Uri "http://localhost:3000/users" -Headers $headers
+
+# Listar tickets
+Invoke-RestMethod -Uri "http://localhost:3000/tickets" -Headers $headers
+```
+
+### Ver los datos en la base de datos H2
+
+1. Abre tu navegador en: http://localhost:8080/h2-console
+2. Ingresa los siguientes datos:
+   - **JDBC URL**: `jdbc:h2:mem:eventdb`
+   - **Usuario**: `sa`
+   - **Password**: `sa`
+3. Haz clic en "Connect"
+4. Ejecuta consultas SQL:
+   ```sql
+   -- Ver todos los usuarios
+   SELECT * FROM users;
+   
+   -- Ver todos los tickets
+   SELECT * FROM tickets;
+   
+   -- Ver tickets con información del usuario
+   SELECT t.*, u.first_name, u.last_name 
+   FROM tickets t 
+   JOIN users u ON t.user_id = u.id;
+   ```
+
+## Ejemplos de uso (Referencia rápida)
+
+### Crear un usuario
 ```bash
 POST http://localhost:8080/api/users
 Authorization: Bearer <tu-token>
@@ -290,7 +591,7 @@ Content-Type: application/json
 }
 ```
 
-### 2. Crear un ticket
+### Crear un ticket
 ```bash
 POST http://localhost:8080/api/tickets
 Authorization: Bearer <tu-token>
@@ -303,13 +604,13 @@ Content-Type: application/json
 }
 ```
 
-### 3. Filtrar tickets por estatus
+### Filtrar tickets por estatus
 ```bash
 GET http://localhost:8080/api/tickets?status=ABIERTO&page=0&size=10
 Authorization: Bearer <tu-token>
 ```
 
-### 4. Obtener tickets de un usuario
+### Obtener tickets de un usuario
 ```bash
 GET http://localhost:8080/api/tickets/user/<uuid-del-usuario>
 Authorization: Bearer <tu-token>

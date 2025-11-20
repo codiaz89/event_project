@@ -284,15 +284,38 @@ curl -X GET http://localhost:8080/api/users \
 
 ## Cómo usar el proyecto con datos reales
 
-### Opción 1: Script automatizado de pruebas (Recomendado)
+### Opción 1: Script automatizado completo (Recomendado) ⭐
 
-Se ejecuta el script que crea usuarios y tickets de ejemplo, y prueba todas las funcionalidades:
+Se ejecuta el script que prueba **TODOS** los endpoints automáticamente:
+
+```powershell
+.\probar-todos-endpoints.ps1
+```
+
+Este script prueba exhaustivamente:
+- ✅ **Autenticación**: Login y obtención de token JWT
+- ✅ **Usuarios**: Crear, listar todos, obtener por ID, actualizar
+- ✅ **Tickets**: Crear, listar todos, obtener por ID, actualizar, eliminar
+- ✅ **Filtros**: Por estado, por usuario, combinados, con paginación
+- ✅ **Tickets por usuario**: Obtener todos los tickets de un usuario
+- ✅ **Frontend BFF**: Health check y endpoints del BFF
+- ✅ **Resumen detallado**: Estadísticas de pruebas exitosas y fallidas
+
+El script muestra un resumen completo con:
+- Total de pruebas ejecutadas
+- Cantidad de pruebas exitosas y fallidas
+- Tasa de éxito en porcentaje
+- Detalles de errores (si los hay)
+
+### Opción 2: Script básico de pruebas
+
+Si se prefiere un script más simple que solo crea datos de ejemplo:
 
 ```powershell
 .\probar-api.ps1
 ```
 
-Este script realiza automáticamente:
+Este script realiza:
 - ✅ Autenticación y obtención de token JWT
 - ✅ Creación de 3 usuarios de ejemplo
 - ✅ Creación de tickets de prueba
@@ -302,7 +325,7 @@ Este script realiza automáticamente:
 - ✅ Actualización de usuarios y tickets
 - ✅ Prueba del frontend BFF
 
-### Opción 2: Prueba manual paso a paso
+### Opción 3: Prueba manual paso a paso
 
 #### Paso 1: Obtener token JWT
 
@@ -530,7 +553,7 @@ curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655
   -H "Authorization: Bearer $token"
 ```
 
-### Opción 3: Usar Swagger UI (Interfaz gráfica)
+### Opción 4: Usar Swagger UI (Interfaz gráfica)
 
 1. Se abre el navegador en: http://localhost:8080/swagger-ui.html
 2. Se hace clic en el endpoint `/api/auth/login` y luego en "Try it out"
@@ -546,7 +569,7 @@ curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655
 6. Se ingresa: `Bearer <tu-token-aqui>` y se hace clic en "Authorize"
 7. Ahora se pueden probar todos los endpoints directamente desde Swagger
 
-### Opción 4: Usar el Frontend BFF
+### Opción 5: Usar el Frontend BFF
 
 El frontend actúa como un BFF (Backend for Frontend) y expone los mismos endpoints:
 

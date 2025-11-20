@@ -17,8 +17,7 @@ Este repositorio contiene el esqueleto inicial para la prueba técnica solicitad
 
 ## Cómo levantar el proyecto
 
-### Opción 1: Levantar con Docker Compose 🐳 (Recomendado)
-
+### Opción 1: Levantar con Docker Compose
 Esta es la forma más sencilla de levantar todo el proyecto. Docker Compose se encarga de construir las imágenes, levantar los contenedores y configurar la red entre servicios.
 
 #### Requisitos previos
@@ -233,7 +232,7 @@ npm run start:dev
 
 El token JWT es necesario para acceder a los endpoints protegidos. Se puede obtener de tres formas:
 
-#### Opción 1: Usar Swagger UI (Recomendado) ⭐
+#### Opción 1: Usar Swagger UI 
 
 1. Se abre el navegador en: http://localhost:8080/swagger-ui.html
 2. Se busca el endpoint `POST /api/auth/login` y se hace clic en "Try it out"
@@ -363,7 +362,7 @@ El frontend actúa como un BFF (Backend for Frontend) y expone los mismos endpoi
 
 ## Cómo probar los endpoints
 
-### Opción 1: Swagger UI (Interfaz gráfica) ⭐
+### Opción 1: Swagger UI (Interfaz gráfica) 
 
 Swagger UI es la forma más fácil de probar todos los endpoints:
 
@@ -551,12 +550,6 @@ El backend utiliza autenticación JWT (JSON Web Tokens) con usuarios en memoria:
 - `ADMIN`: Se pueden crear, actualizar o eliminar recursos (CRUD completo)
 
 Los recursos de Swagger y H2 permanecen públicos para facilitar las pruebas locales.
-
----
-
-## Recursos adicionales
-
-- [Guía Completa de Docker](GUIA-DOCKER.md) - Instrucciones detalladas para instalar y usar Docker
 
 ---
 

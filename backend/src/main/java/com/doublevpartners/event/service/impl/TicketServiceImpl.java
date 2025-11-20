@@ -99,6 +99,14 @@ public class TicketServiceImpl implements TicketService {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteTicket(UUID ticketId) {
+        TicketEntity entity = getTicket(ticketId);
+        UUID userId = entity.getUser().getId();
+        ticketRepository.delete(entity);
+        evictUserTicketsCache(userId);
+    }
+
     private UserEntity getUser(UUID userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundException("Usuario no encontrado con id " + userId));

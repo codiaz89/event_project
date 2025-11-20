@@ -19,5 +19,7 @@ public interface TicketService {
     Page<TicketResponse> getTickets(TicketFilter filter, Pageable pageable);
 
     List<TicketResponse> getTicketsByUser(UUID userId);
+
+    void deleteTicket(UUID ticketId);
 }
 

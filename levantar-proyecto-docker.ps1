@@ -7,10 +7,10 @@ Write-Host ""
 Write-Host "PASO 1: Verificando Docker..." -ForegroundColor Yellow
 Write-Host ""
 
-try {
-    $dockerVersion = docker --version 2>&1
+$dockerVersion = docker --version 2>&1
+if ($LASTEXITCODE -eq 0) {
     Write-Host "   ✓ Docker encontrado: $dockerVersion" -ForegroundColor Green
-} catch {
+} else {
     Write-Host "   ✗ Docker no está instalado" -ForegroundColor Red
     Write-Host ""
     Write-Host "   Por favor:" -ForegroundColor Yellow
@@ -24,28 +24,22 @@ try {
 # Verificar que Docker está corriendo
 Write-Host ""
 Write-Host "   Verificando que Docker está corriendo..." -ForegroundColor Yellow
-try {
-    docker ps > $null 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "   ✓ Docker está corriendo" -ForegroundColor Green
-    } else {
-        Write-Host "   ✗ Docker no está corriendo" -ForegroundColor Red
-        Write-Host "   Por favor, inicia Docker Desktop y espera a que esté listo" -ForegroundColor Yellow
-        exit 1
-    }
-} catch {
-    Write-Host "   ✗ No se pudo conectar a Docker" -ForegroundColor Red
-    Write-Host "   Por favor, inicia Docker Desktop" -ForegroundColor Yellow
+docker ps > $null 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "   ✓ Docker está corriendo" -ForegroundColor Green
+} else {
+    Write-Host "   ✗ Docker no está corriendo" -ForegroundColor Red
+    Write-Host "   Por favor, inicia Docker Desktop y espera a que esté listo" -ForegroundColor Yellow
     exit 1
 }
 
 # Verificar Docker Compose
 Write-Host ""
 Write-Host "PASO 2: Verificando Docker Compose..." -ForegroundColor Yellow
-try {
-    $composeVersion = docker compose version 2>&1
+$composeVersion = docker compose version 2>&1
+if ($LASTEXITCODE -eq 0) {
     Write-Host "   ✓ Docker Compose encontrado: $composeVersion" -ForegroundColor Green
-} catch {
+} else {
     Write-Host "   ✗ Docker Compose no está disponible" -ForegroundColor Red
     Write-Host "   Docker Compose viene incluido con Docker Desktop" -ForegroundColor Yellow
     exit 1
@@ -113,4 +107,5 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "   ✗ Error al levantar los servicios" -ForegroundColor Red
     Write-Host "   Revisa los mensajes de error arriba" -ForegroundColor Yellow
 }
+
 

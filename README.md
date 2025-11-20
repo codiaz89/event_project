@@ -142,6 +142,128 @@ docker compose up --build
 docker compose down
 ```
 
+## ¿Cómo verificar que se levantó correctamente?
+
+### Método 1: Script automatizado (Recomendado)
+
+Ejecuta el script de verificación que comprueba automáticamente todos los servicios:
+
+```powershell
+.\verificar-proyecto.ps1
+```
+
+Este script verifica:
+- ✅ Que los contenedores Docker estén corriendo
+- ✅ Que los logs muestren inicio exitoso
+- ✅ Que los endpoints estén accesibles
+- ✅ Que el login funcione correctamente
+- ✅ Que Swagger UI esté disponible
+
+### Método 2: Verificación manual
+
+#### 1. Verificar contenedores
+```bash
+docker ps
+```
+
+Deberías ver dos contenedores corriendo:
+- `event-platform-backend-1` en puerto `8080`
+- `event-platform-frontend-1` en puerto `3000`
+
+#### 2. Verificar logs
+```bash
+# Logs del backend
+docker logs event-platform-backend-1 --tail 20
+
+# Logs del frontend
+docker logs event-platform-frontend-1 --tail 20
+```
+
+Busca estos mensajes:
+- **Backend**: `Started EventBackendApplication` o `Tomcat started`
+- **Frontend**: `Nest application successfully started` o `listening`
+
+#### 3. Verificar endpoints en el navegador
+
+Abre tu navegador y visita:
+
+- **Swagger UI**: http://localhost:8080/api/swagger
+  - Deberías ver la documentación interactiva de la API
+  
+- **API Docs (JSON)**: http://localhost:8080/api/docs
+  - Deberías ver el JSON de la especificación OpenAPI
+
+- **Frontend**: http://localhost:3000
+  - Deberías ver una respuesta (puede ser un error 404 si no hay ruta raíz, pero el servidor debe responder)
+
+#### 4. Probar el login
+
+Usa PowerShell, Postman, o curl:
+
+```powershell
+# PowerShell
+$body = @{
+    username = "admin"
+    password = "admin123"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -Body $body -ContentType "application/json"
+```
+
+O con curl:
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+**Respuesta esperada:**
+```json
+{
+  "jwtToken": "eyJhbGciOiJIUzM4NCJ9..."
+}
+```
+
+#### 5. Probar un endpoint protegido
+
+Usa el token obtenido en el paso anterior:
+
+```powershell
+# PowerShell
+$token = "tu-token-aqui"
+$headers = @{
+    Authorization = "Bearer $token"
+}
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method GET -Headers $headers
+```
+
+O con curl:
+```bash
+curl -X GET http://localhost:8080/api/users \
+  -H "Authorization: Bearer tu-token-aqui"
+```
+
+**Respuesta esperada:** Una lista de usuarios (puede estar vacía inicialmente)
+
+### Indicadores de éxito ✅
+
+- ✅ Los contenedores aparecen en `docker ps` con estado "Up"
+- ✅ Los logs muestran mensajes de inicio exitoso
+- ✅ Swagger UI se carga en el navegador
+- ✅ El login devuelve un token JWT
+- ✅ Los endpoints protegidos responden con el token
+
+### Indicadores de problemas ❌
+
+- ❌ Los contenedores no aparecen o están en estado "Exited"
+- ❌ Los logs muestran errores de conexión o compilación
+- ❌ No puedes acceder a las URLs en el navegador
+- ❌ El login devuelve error 401 o 500
+- ❌ Los endpoints protegidos devuelven 401/403 incluso con token
+
+**Solución:** Revisa la sección [Solución de problemas comunes](#solución-de-problemas-comunes) más abajo.
+
 ### Endpoints BFF disponibles
 - `GET /health` - Health check del servicio
 - `GET /users` - Listar todos los usuarios

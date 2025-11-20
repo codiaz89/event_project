@@ -15,7 +15,50 @@ Este repositorio contiene el esqueleto inicial para la prueba tÃ©cnica solicit
 
 ## Cómo levantar el proyecto
 
-### Opción 1: Levantar manualmente (paso a paso)
+### Opción 1: Levantar con Docker Compose (Recomendado) 🐳
+
+> 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
+
+#### Pasos rápidos:
+
+1. **Asegúrate de tener Docker Desktop instalado y corriendo**
+   - Descarga desde: https://www.docker.com/products/docker-desktop/
+   - Inicia Docker Desktop y espera a que esté listo (verás el ícono de Docker en la bandeja del sistema)
+
+2. **Verifica la instalación:**
+```bash
+docker --version
+docker compose version
+```
+
+3. **Desde la raíz del proyecto, ejecuta:**
+```bash
+# Opción A: Usar el script automatizado (Windows - Recomendado)
+.\levantar-proyecto-docker.ps1
+
+# Opción B: Comando manual
+docker compose up --build
+```
+
+4. **Espera a que los servicios inicien** (5-10 minutos la primera vez mientras descarga dependencias y construye las imágenes)
+
+5. **Verifica que todo funciona:**
+   - **Backend API**: http://localhost:8080
+   - **Swagger UI**: http://localhost:8080/swagger-ui.html
+   - **API Docs (JSON)**: http://localhost:8080/api/docs
+   - **H2 Console**: http://localhost:8080/h2-console
+   - **Frontend BFF**: http://localhost:3000
+
+6. **Para detener los servicios:**
+```bash
+# Presiona Ctrl+C en la terminal donde corre Docker
+# O ejecuta en otra terminal:
+docker compose down
+```
+
+> 💡 **Tip:** Usa el script `.\verificar-proyecto.ps1` para verificar automáticamente que todo esté funcionando correctamente.
+
+### Opción 2: Levantar manualmente (paso a paso)
 
 #### Paso 1: Levantar el Backend (Spring Boot)
 
@@ -39,11 +82,12 @@ Started EventBackendApplication in X.XXX seconds
 ```
 
 4. El backend estará disponible en:
-   - API: `http://localhost:8080`
-   - Swagger UI: `http://localhost:8080/api/swagger`
-   - H2 Console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:eventdb`)
+   - **API**: `http://localhost:8080`
+   - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+   - **API Docs**: `http://localhost:8080/api/docs`
+   - **H2 Console**: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:eventdb`)
 
-#### Paso 2: Obtener token JWT (opcional, pero recomendado)
+#### Paso 2: Obtener token JWT
 
 Antes de usar la API, necesitas autenticarte:
 
@@ -68,6 +112,8 @@ Antes de usar la API, necesitas autenticarte:
 ```
 Authorization: Bearer <tu-token-aqui>
 ```
+
+> 💡 **Tip:** También puedes usar Swagger UI para obtener el token. Ve a http://localhost:8080/swagger-ui.html, prueba el endpoint `/api/auth/login`, copia el token y luego haz clic en "Authorize" (arriba a la derecha) para configurarlo.
 
 #### Paso 3: Levantar el Frontend (NestJS)
 
@@ -100,47 +146,8 @@ npm run start:dev
 ```
 
 5. El frontend estará disponible en:
-   - BFF API: `http://localhost:3000`
-   - Health Check: `http://localhost:3000/health`
-
-### Opción 2: Levantar con Docker Compose (todo en uno)
-
-> 📖 **¿Primera vez usando Docker?** Consulta la [Guía Completa de Docker](GUIA-DOCKER.md) que incluye instrucciones paso a paso desde la instalación.
-
-#### Pasos rápidos:
-
-1. **Asegúrate de tener Docker Desktop instalado y corriendo**
-   - Descarga desde: https://www.docker.com/products/docker-desktop/
-   - Inicia Docker Desktop y espera a que esté listo
-
-2. **Verifica la instalación:**
-```bash
-docker --version
-docker compose version
-```
-
-3. **Desde la raíz del proyecto, ejecuta:**
-```bash
-# Opción A: Usar el script automatizado (Windows)
-.\levantar-proyecto-docker.ps1
-
-# Opción B: Comando manual
-docker compose up --build
-```
-
-4. **Espera a que los servicios inicien** (5-10 minutos la primera vez)
-
-5. **Verifica que todo funciona:**
-   - Backend: http://localhost:8080
-   - Swagger: http://localhost:8080/api/swagger
-   - Frontend: http://localhost:3000
-
-6. **Para detener los servicios:**
-```bash
-# Presiona Ctrl+C en la terminal donde corre Docker
-# O ejecuta en otra terminal:
-docker compose down
-```
+   - **BFF API**: `http://localhost:3000`
+   - **Health Check**: `http://localhost:3000/health`
 
 ## ¿Cómo verificar que se levantó correctamente?
 
@@ -187,7 +194,7 @@ Busca estos mensajes:
 
 Abre tu navegador y visita:
 
-- **Swagger UI**: http://localhost:8080/api/swagger
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
   - Deberías ver la documentación interactiva de la API
   
 - **API Docs (JSON)**: http://localhost:8080/api/docs
@@ -526,7 +533,7 @@ curl -X DELETE "http://localhost:8080/api/tickets/660e8400-e29b-41d4-a716-446655
 
 ### Opción 3: Usar Swagger UI (Interfaz gráfica)
 
-1. Abre tu navegador en: http://localhost:8080/api/swagger
+1. Abre tu navegador en: http://localhost:8080/swagger-ui.html
 2. Haz clic en el endpoint `/api/auth/login` y luego en "Try it out"
 3. Ingresa las credenciales:
    ```json

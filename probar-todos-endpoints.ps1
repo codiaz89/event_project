@@ -241,15 +241,17 @@ if ($user1 -and $user1.id) {
         -Url "$baseUrl/api/tickets?userId=$($user1.id)" `
         -Headers $headers | Out-Null
     
+    $urlCombinado = "$baseUrl/api/tickets?status=ABIERTO&userId=$($user1.id)"
     Test-Endpoint -Name "GET /api/tickets?status=ABIERTO&userId={id} (Filtrar por estado y usuario)" `
         -Method "GET" `
-        -Url "$baseUrl/api/tickets?status=ABIERTO&userId=$($user1.id)" `
+        -Url $urlCombinado `
         -Headers $headers | Out-Null
 }
 
+$urlPaginacion = "$baseUrl/api/tickets?page=0&size=5"
 Test-Endpoint -Name "GET /api/tickets?page=0&size=5 (Paginación)" `
     -Method "GET" `
-    -Url "$baseUrl/api/tickets?page=0&size=5" `
+    -Url $urlPaginacion `
     -Headers $headers | Out-Null
 
 Write-Host ""

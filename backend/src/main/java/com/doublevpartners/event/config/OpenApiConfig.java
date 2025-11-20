@@ -20,10 +20,6 @@ public class OpenApiConfig {
         localServer.setUrl("http://localhost:8080");
         localServer.setDescription("Servidor local de desarrollo");
 
-        Contact contact = new Contact();
-        contact.setEmail("welcome@doublevpartners.com");
-        contact.setName("Double V Partners / NYX");
-
         License license = new License()
             .name("MIT License")
             .url("https://opensource.org/licenses/MIT");
@@ -31,7 +27,6 @@ public class OpenApiConfig {
         Info info = new Info()
             .title("Event Platform API")
             .version("1.0.0")
-            .contact(contact)
             .description("API REST para gestión de usuarios y tickets de eventos. " +
                 "Proporciona operaciones CRUD completas con soporte para filtrado y paginación.")
             .license(license);

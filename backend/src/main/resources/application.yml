@@ -29,4 +29,9 @@ springdoc:
   api-docs:
     path: /api/docs
   swagger-ui:
-    path: /api/swagger
+    path: /swagger-ui.html
+    enabled: true
+    config-url: /api/docs
+    urls:
+      - url: /api/docs
+        name: Event Platform API

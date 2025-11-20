@@ -88,6 +88,7 @@ Write-Host "   (Presiona Ctrl+C para detener los servicios)" -ForegroundColor Wh
 Write-Host ""
 
 # Ejecutar docker compose
+Write-Host "   Iniciando construcción..." -ForegroundColor White
 docker compose up --build
 
 if ($LASTEXITCODE -eq 0) {
@@ -104,8 +105,31 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Para detener los servicios, presiona Ctrl+C" -ForegroundColor Yellow
 } else {
     Write-Host ""
-    Write-Host "   ✗ Error al levantar los servicios" -ForegroundColor Red
-    Write-Host "   Revisa los mensajes de error arriba" -ForegroundColor Yellow
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host "  Error al levantar los servicios" -ForegroundColor Red
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Soluciones comunes:" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "1. Verifica que Docker Desktop esté completamente iniciado:" -ForegroundColor White
+    Write-Host "   - El ícono en la bandeja debe mostrar 'Docker Desktop is running'" -ForegroundColor Gray
+    Write-Host "   - Si no, reinicia Docker Desktop" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "2. Ejecuta el diagnóstico:" -ForegroundColor White
+    Write-Host "   .\diagnosticar-docker.ps1" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "3. Limpia recursos Docker:" -ForegroundColor White
+    Write-Host "   docker system prune -a --volumes -f" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "4. Intenta reconstruir sin caché:" -ForegroundColor White
+    Write-Host "   docker compose build --no-cache" -ForegroundColor Cyan
+    Write-Host "   docker compose up" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "5. Verifica que WSL 2 esté habilitado:" -ForegroundColor White
+    Write-Host "   wsl --status" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Si el problema persiste, revisa los logs:" -ForegroundColor Yellow
+    Write-Host "   docker compose logs" -ForegroundColor Cyan
 }
 
 
